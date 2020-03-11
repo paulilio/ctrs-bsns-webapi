@@ -5,6 +5,7 @@ import router from './router'
 import store from './store'
 import NProgress from 'vue-nprogress'
 import FirebaseAuthService from './services/firebase'
+import i18n from './plugins/i18n'
 import './registerServiceWorker'
 import './global.scss'
 
@@ -55,7 +56,7 @@ Vue.prototype.$notification = notification
 Vue.use(NProgress)
 Vue.use(FirebaseAuthService)
 Vue.use(VuePageTitle, {
-  prefix: 'Clean UI Vue Pro | ',
+  prefix: 'Control Business 1.0 | ',
   router,
 })
 
@@ -66,5 +67,6 @@ new Vue({
   router,
   store,
   nprogress,
+  i18n,
   render: h => h(App),
 }).$mount('#app')
