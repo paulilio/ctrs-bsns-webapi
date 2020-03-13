@@ -1,33 +1,33 @@
 <template>
-  <a-dropdown :trigger="['click']" placement="bottomLeft">
-    <div :class="$style.dropdown">
-      <i class="icmn-database" :class="$style.icon"></i>
+  <a-dropdown :trigger="['click']" placement="bottomLeft" class="dropdown_prime">
+    <div :class="$style.dropdown" style="">
+      <i class="icmn-office" :class="$style.icon"></i>
       <span class="d-none d-xl-inline">
-        <strong>Project Management</strong>
+        <strong>Empresa A</strong>
       </span>
     </div>
     <a-menu slot="overlay">
-      <a-menu-item-group title="Active">
+      <a-menu-item-group title="Ativas">
         <a-menu-item>
-          <a href="javascript: void(0);">Project Management</a>
+          <a href="javascript: void(0);">Empresa A</a>
         </a-menu-item>
         <a-menu-item>
-          <a href="javascript: void(0);">User Interface Development</a>
+          <a href="javascript: void(0);">Empresa B</a>
         </a-menu-item>
         <a-menu-item>
-          <a href="javascript: void(0);">Documentation</a>
+          <a href="javascript: void(0);">Empresa C</a>
         </a-menu-item>
       </a-menu-item-group>
-      <a-menu-item-group title="Inactive">
+      <a-menu-item-group title="Inativas">
         <a-menu-item>
-          <a href="javascript: void(0);">Marketing</a>
+          <a href="javascript: void(0);">Empresa D</a>
         </a-menu-item>
       </a-menu-item-group>
       <a-menu-divider/>
       <a-menu-item>
         <a href="javascript: void(0);">
           <i class="icmn-cog" :class="$style.menuIcon"/>
-          Settings
+          Gerenciar Empresas
         </a>
       </a-menu-item>
     </a-menu>

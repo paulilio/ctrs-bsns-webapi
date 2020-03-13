@@ -25,7 +25,7 @@ export default {
       isBorderless: true,
       isSquaredBorders: false,
       isFixedWidth: false,
-      isMenuShadow: true,
+      isMenuShadow: false,
     }),
   },
   mutations: {

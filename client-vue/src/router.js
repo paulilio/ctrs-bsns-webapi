@@ -11,7 +11,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      redirect: 'dashboard/alpha',
+      redirect: 'dashboard/principal',
       component: MainLayout,
       meta: {
         authRequired: true,
@@ -20,11 +20,11 @@ const router = new Router({
       children: [
         // Dashboards
         {
-          path: '/dashboard/alpha',
+          path: '/dashboard/principal',
           meta: {
-            title: 'Dashboard Alpha',
+            title: 'Principal',
           },
-          component: () => import('./views/dashboard/alpha'),
+          component: () => import('./views/dashboard/principal'),
         },
 
         // 404

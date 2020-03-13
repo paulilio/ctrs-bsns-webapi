@@ -3,12 +3,12 @@
     <router-link v-if="menuInfo.url" :to="menuInfo.url">
       <span :class="styles.title">{{ menuInfo.title }}</span>
       <i v-if="menuInfo.icon" :class="[styles.icon, menuInfo.icon]"></i>
-      <span v-if="menuInfo.pro" class="badge badge-primary ml-2">PRO</span>
+      <span v-if="menuInfo.pro" class="badge badge-primary ml-2">&nbsp;</span>
     </router-link>
     <span v-if="!menuInfo.url" :to="menuInfo.url">
       <span :class="styles.title">{{ menuInfo.title }}</span>
       <i v-if="menuInfo.icon" :class="[styles.icon, menuInfo.icon]"></i>
-      <span v-if="menuInfo.pro" class="badge badge-primary ml-2">PRO</span>
+      <span v-if="menuInfo.pro" class="badge badge-primary ml-2">&nbsp;</span>
     </span>
   </a-menu-item>
 </template>

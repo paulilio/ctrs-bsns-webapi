@@ -5,10 +5,11 @@
   padding: 0 rem(20);
   min-height: 64px;
   height: 64px;
-  border-bottom: 1px solid $gray-border;
-  color: $text;
+  border-bottom: 1px solid #000c17;
+  color: #d2d9e5;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
+  background-color: #000c17;
 }
