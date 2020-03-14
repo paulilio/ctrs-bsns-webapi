@@ -11,9 +11,9 @@ export const getLeftMenuData = [
     icon: 'icmn icmn-stats-bars',
     children: [
       {
-        title: 'Vendas',
-        key: 'chartist',
-        url: '/charts/chartist',
+        title: 'Importação de Dados',
+        key: 'importacaodados',
+        url: '/situacaoatual/importacaodados',
       },
       {
         title: 'Faturamento',

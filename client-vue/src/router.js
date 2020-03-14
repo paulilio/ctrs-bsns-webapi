@@ -26,6 +26,14 @@ const router = new Router({
           },
           component: () => import('./views/dashboard/principal'),
         },
+        // Situacaoatual
+        {
+          path: '/situacaoatual/importacaodados',
+          meta: {
+            title: 'Importação de Dados',
+          },
+          component: () => import('./views/situacaoatual/importacaodados'),
+        },
 
         // 404
         {

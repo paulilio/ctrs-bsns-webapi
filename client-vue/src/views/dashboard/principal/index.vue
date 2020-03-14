@@ -1,18 +1,22 @@
 <template>
   <div>
     <div class="utils__title mb-3">
-      <strong class="text-uppercase font-size-16">{{ $t('welcomeMsg') }}</strong>
+      <strong class="text-uppercase font-size-16">{{
+        $t("welcomeMsg")
+      }}</strong>
     </div>
-    <!--
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
-
+            &nbsp;
           </div>
         </div>
       </div>
     </div>
-    -->
   </div>
 </template>
+
+<script>
+
+</script>

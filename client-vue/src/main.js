@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import NProgress from 'vue-nprogress'
+//import { VueCsvImport } from 'vue-csv-import'
 import FirebaseAuthService from './services/firebase'
 import i18n from './plugins/i18n'
 import './registerServiceWorker'
@@ -60,6 +61,9 @@ Vue.use(VuePageTitle, {
   router,
 })
 
+//Vue.component("VueCsvImport", VueCsvImport );
+
+
 Vue.config.productionTip = false
 const nprogress = new NProgress({ parent: 'body' })
 
@@ -68,5 +72,6 @@ new Vue({
   store,
   nprogress,
   i18n,
+  //VueCsvImport,
   render: h => h(App),
 }).$mount('#app')
