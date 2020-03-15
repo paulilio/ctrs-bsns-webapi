@@ -18,7 +18,7 @@
         type="primary"
         @click="$message.success('Processing complete!')"
       >Done</a-button>
-      <a-button v-if="current>0" style="margin-left: 8px" @click="prev">Previous</a-button>
+      <a-button v-if="current>0" type="link" style="margin-left: 8px" @click="prev">Previous</a-button>
     </div>
     <h2>teste:</h2>
     <h2>{{ totalTvCount }}</h2>
@@ -58,7 +58,8 @@ export default {
   },
   methods: {
     next() {
-      if (this.$refs.step1.completeStep()) {
+      var comp = this.steps[this.current].component;
+      if (this.$refs[comp].completeStep()) {
         this.current++;
       }
     },

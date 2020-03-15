@@ -1,15 +1,11 @@
 <template>
   <div>
     <h1>STEP3</h1>
-    <p>I see {{ totalTvCount }} TVs!</p>
-    <p v-show="!totalTvCount">I can't buy any..</p>
-    <button :disabled="!totalTvCount" @click="buyTv">Buy TV</button>
-    <button :disabled="totalTvCount < 2" @click="buyTwoTvs">Buy Two TVs</button>
   </div>
 </template>
 
 <script>
-import { store } from "./store";
+import { store } from "@/store";
 
 export default {
   data() {
@@ -18,14 +14,6 @@ export default {
     };
   },
   methods: {
-    buyTv() {
-      // Dispatch the action to buy a TV
-      store.dispatch("removeTv", 1);
-    },
-    buyTwoTvs() {
-      // Dispatch the action to buy two TVs
-      store.dispatch("removeTv", 2);
-    },
     completeStep() {
       //valida
       //salva no store
@@ -42,11 +30,6 @@ export default {
     },
     warning() {
       this.$message.warning("This is message of warning");
-    }
-  },
-  computed: {
-    totalTvCount() {
-      return store.state.totalTvCount;
     }
   }
 };

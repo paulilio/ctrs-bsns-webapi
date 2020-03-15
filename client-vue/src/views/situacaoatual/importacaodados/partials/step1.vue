@@ -1,10 +1,10 @@
 <template>
   <a-upload-dragger
     name="csv"
+    ref="csv"
     :multiple="false"
     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
     @change="validFileMimeType"
-    ref="csv"
   >
     <p class="ant-upload-drag-icon">
       <a-icon type="inbox" />
@@ -18,10 +18,17 @@
 </template>
 
 <script>
+//import store from "@/store";
+import { store } from "../store";
 import mimeTypes from "mime-types";
+import Papa from "papaparse";
 
 export default {
   props: {
+    callback: {
+      type: Function,
+      default: () => ({})
+    },
     fileMimeTypes: {
       type: Array,
       default: () => {
@@ -37,14 +44,37 @@ export default {
   data() {
     return {
       isValidFileMimeType: false,
-      fieldsToMap: [],
-      map: {},
-      hasHeaders: true,
-      sample: null,
-      isValidFileMimeType: false
+      file: null,
+      csv: null
     };
   },
   methods: {
+    completeStep() {
+      //valida
+      //salva no store
+      this.load();
+      this.$message.success("This is a message of success");
+      return true;
+    },
+    load() {
+      const _this = this;
+      this.readFile(output => {
+        _this.csv = get(Papa.parse(output, { skipEmptyLines: true }), "data");
+      });
+      //store.dispatch("setCsv", csvUpload);
+      console.log(_this.csv);
+    },
+    readFile(callback) {
+      let file = this.file;
+      if (file) {
+        let reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function(evt) {
+          callback(evt.target.result);
+        };
+        reader.onerror = function() {};
+      }
+    },
     validFileMimeType(info) {
       let file = info.fileList[0];
       const mimeType =
@@ -53,16 +83,20 @@ export default {
         this.isValidFileMimeType = this.validation
           ? this.validateMimeType(mimeType)
           : true;
-        this.$emit("setDataFromStep1", this.isValidFileMimeType);
-        console.log(
-          "debug-isValidFileMimeType: " + this.isValidFileMimeType.toString()
-        );
+        //this.$emit("setDataFromStep1", this.isValidFileMimeType);
+        (this.file = file),
+          console.log(
+            "debug-step1-validFileMimeType: " +
+              this.isValidFileMimeType.toString()
+          );
       } else {
-        console.log("not ok");
+        console.log("debug-step1-validFileMimeType: Inválido.");
         this.isValidFileMimeType = !this.validation;
-        this.fileSelected = false;
+        //this.fileSelected = false;
+        //store.dispatch("setFileSelected", false);
       }
-      console.log("o-conck");
+      store.dispatch("setFileSelected", this.isValidFileMimeType);
+      console.log("debug-step1-validFileMimeType: Concluido.");
     },
     validateMimeType(type) {
       return this.fileMimeTypes.indexOf(type) > -1;

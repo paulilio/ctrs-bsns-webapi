@@ -16,35 +16,24 @@
               />
             </a-steps>
             <div class="steps-content">
-              <!-- Conteúdo Importação-->
-              <step1-upload
-                @setDataFromStep1="setDataFromStep1($event)"
-              ></step1-upload>
-              <!-- Fim: Conteúdo Importação-->
+              <div class="steps-content">
+                <div :is="steps[current].component" :ref="steps[current].component"></div>
+              </div>
             </div>
             <div class="steps-action">
               <a-button
                 v-if="current < steps.length - 1"
                 :disabled="!fileSelected"
                 type="primary"
-                @click.prevent="load"
-              >
-                Próximo {{ !fileSelected }}
-              </a-button>
+                @click.prevent="next"
+              >Próximo</a-button>
               <a-button
                 v-if="current == steps.length - 1"
                 type="primary"
                 @click="$message.success('Processing complete!')"
-              >
-                Done
-              </a-button>
-              <a-button
-                v-if="current > 0"
-                style="margin-left: 8px"
-                @click="prev"
-              >
-                Anterior
-              </a-button>
+              >Done</a-button>
+              <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">Anterior</a-button>
+              <h1>{{ fileSelected }}</h1>
             </div>
           </div>
         </div>
@@ -54,59 +43,53 @@
 </template>
 
 <script>
-import step1Upload from "./partials/step1Upload";
+import step1 from "./partials/step1";
+import step2 from "./partials/step2";
+import step3 from "./partials/step3";
+import { store } from "./store";
 
 export default {
-  components: { step1Upload },
+  components: { step1, step2, step3 },
   props: {},
   data() {
     return {
-      form: {
-        csv: null
-      },
-      csv: null,
-      fileSelected: false,
       current: 0,
       steps: [
         {
           title: "Selecione o Arquivo",
-          content: "First-content",
-          description: "Apenas arquivos csv"
+          description: "Apenas arquivos csv",
+          component: "step1"
         },
         {
           title: "Análise dos campos",
-          content: "Second-content",
-          description: "Verifica os campos"
+          description: "Verifica os campos",
+          component: "step2"
         },
         {
           title: "Conclusão",
-          content: "Last-content",
-          description: "Avaliação final"
+          description: "Avaliação final",
+          component: "step3"
         }
       ]
     };
   },
   methods: {
-    setDataFromStep1(value) {
-      this.fileSelected = value;
-    },
     next() {
-      this.current++;
+      var comp = this.steps[this.current].component;
+      if (this.$refs[comp].completeStep()) {
+        this.current++;
+      }
     },
     prev() {
       this.current--;
-    },
-    load() {
-      const _this = this;
-      this.readFile(output => {
-        _this.csv = get(Papa.parse(output, { skipEmptyLines: true }), "data");
-      });
-      console.log(_this.csv);
     }
   },
   computed: {
     disabledNextButton() {
       return !this.isValidFileMimeType;
+    },
+    fileSelected() {
+      return store.state.fileSelected;
     }
   }
 };
