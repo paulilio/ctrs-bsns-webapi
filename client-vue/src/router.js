@@ -1,94 +1,104 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import LoginLayout from '@/layouts/Login'
-import MainLayout from '@/layouts/Main'
-import store from '@/store'
+import Vue from "vue";
+import Router from "vue-router";
+import LoginLayout from "@/layouts/Login";
+import MainLayout from "@/layouts/Main";
+import store from "@/store";
 
-Vue.use(Router)
+Vue.use(Router);
 
 const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      redirect: 'dashboard/principal',
+      path: "/",
+      redirect: "dashboard/principal",
       component: MainLayout,
       meta: {
         authRequired: true,
-        hidden: true,
+        hidden: true
       },
       children: [
         // Dashboards
         {
-          path: '/dashboard/principal',
+          path: "/dashboard/principal",
           meta: {
-            title: 'Principal',
+            title: "Principal"
           },
-          component: () => import('./views/dashboard/principal'),
+          component: () => import("./views/dashboard/principal")
         },
         // Situacaoatual
         {
-          path: '/situacaoatual/importacaodados',
+          path: "/situacaoatual/importacaodados",
           meta: {
-            title: 'Importação de Dados',
+            title: "Importação de Dados"
           },
-          component: () => import('./views/situacaoatual/importacaodados'),
+          component: () => import("./views/situacaoatual/importacaodados")
+        },
+        // Faturamento
+        {
+          path: "/wizard",
+          meta: {
+            title: "Exemplo Wizard"
+          },
+          component: () => import("./views/wizard")
         },
 
         // 404
         {
-          path: '/404',
+          path: "/404",
           meta: {
-            title: '404',
+            title: "404"
           },
-          component: () => import('./views/404'),
-        },
-      ],
+          component: () => import("./views/404")
+        }
+      ]
     },
 
     // System Pages
     {
-      path: '/user',
+      path: "/user",
       component: LoginLayout,
-      redirect: '/user/login',
+      redirect: "/user/login",
       children: [
         {
-          path: '/user/login',
+          path: "/user/login",
           meta: {
-            title: 'Login',
+            title: "Login"
           },
-          component: () => import('./views/user/login'),
+          component: () => import("./views/user/login")
         },
         {
-          path: '/user/forgot',
+          path: "/user/forgot",
           meta: {
-            title: 'Forgot Password',
+            title: "Forgot Password"
           },
-          component: () => import('./views/user/forgot'),
-        },
-      ],
+          component: () => import("./views/user/forgot")
+        }
+      ]
     },
 
     // Redirect to 404
     {
-      path: '*', redirect: '/404', hidden: true,
-    },
-  ],
-})
+      path: "*",
+      redirect: "/404",
+      hidden: true
+    }
+  ]
+});
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.authRequired)) {
     if (!store.state.user.user) {
       next({
-        path: '/user/login',
-        query: { redirect: to.fullPath },
-      })
+        path: "/user/login",
+        query: { redirect: to.fullPath }
+      });
     } else {
-      next()
+      next();
     }
   } else {
-    next()
+    next();
   }
-})
+});
 
-export default router
+export default router;

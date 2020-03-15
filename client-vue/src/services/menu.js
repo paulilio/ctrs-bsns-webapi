@@ -16,9 +16,9 @@ export const getLeftMenuData = [
         url: "/situacaoatual/importacaodados"
       },
       {
-        title: "Faturamento",
-        key: "chartist",
-        url: "/charts/chartist"
+        title: "Wizard",
+        key: "wizard",
+        url: "/wizard"
       },
       {
         title: "Contas a Receber",

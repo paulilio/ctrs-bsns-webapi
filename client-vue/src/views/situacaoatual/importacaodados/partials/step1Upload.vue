@@ -9,14 +9,10 @@
     <p class="ant-upload-drag-icon">
       <a-icon type="inbox" />
     </p>
-    <p class="ant-upload-text">
-      Clique ou arraste um arquivo .csv para esta área para importação
-    </p>
+    <p class="ant-upload-text">Clique ou arraste um arquivo .csv para esta área para importação</p>
     <p class="ant-upload-hint">Suporte para um upload único.</p>
     <slot name="error" v-if="showErrorMessage">
-      <div class="invalid-feedback d-block">
-        File type is invalid
-      </div>
+      <div class="invalid-feedback d-block">File type is invalid</div>
     </slot>
   </a-upload-dragger>
 </template>
@@ -41,16 +37,11 @@ export default {
   data() {
     return {
       isValidFileMimeType: false,
-      form: {
-        csv: null
-      },
       fieldsToMap: [],
       map: {},
       hasHeaders: true,
-      csv: null,
       sample: null,
-      isValidFileMimeType: false,
-      fileSelected: false
+      isValidFileMimeType: false
     };
   },
   methods: {
@@ -59,15 +50,19 @@ export default {
       const mimeType =
         file.type === "" ? mimeTypes.lookup(file.name) : file.type;
       if (file) {
-        this.fileSelected = true;
         this.isValidFileMimeType = this.validation
           ? this.validateMimeType(mimeType)
           : true;
+        this.$emit("setDataFromStep1", this.isValidFileMimeType);
+        console.log(
+          "debug-isValidFileMimeType: " + this.isValidFileMimeType.toString()
+        );
       } else {
+        console.log("not ok");
         this.isValidFileMimeType = !this.validation;
         this.fileSelected = false;
       }
-      console.log("ok");
+      console.log("o-conck");
     },
     validateMimeType(type) {
       return this.fileMimeTypes.indexOf(type) > -1;
