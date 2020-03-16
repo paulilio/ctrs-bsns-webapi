@@ -1,26 +1,19 @@
 <template>
-  <a-upload-dragger
-    name="csv"
-    ref="csv"
-    :multiple="false"
-    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-    @change="validFileMimeType"
-  >
-    <p class="ant-upload-drag-icon">
-      <a-icon type="inbox" />
-    </p>
+  <div>
+    <a-upload-dragger :fileList="fileList" :remove="handleRemove" :beforeUpload="beforeUpload">
+    <p class="ant-upload-drag-icon"><a-icon type="inbox" /></p>
     <p class="ant-upload-text">Clique ou arraste um arquivo .csv para esta área para importação</p>
-    <p class="ant-upload-hint">Suporte para um upload único.</p>
-    <slot name="error" v-if="showErrorMessage">
-      <div class="invalid-feedback d-block">File type is invalid</div>
-    </slot>
-  </a-upload-dragger>
+    <p class="ant-upload-hint"></p>
+    <slot name="error" v-if="showErrorMessage"><h2><div class="invalid-feedback d-block">Tipo de arquivo inválido!</div></h2></slot>
+    </a-upload-dragger>
+  </div>
 </template>
 
 <script>
 //import store from "@/store";
 import { store } from "../store";
 import mimeTypes from "mime-types";
+import { drop, every, forEach, get, isArray, map, set } from 'lodash';
 import Papa from "papaparse";
 
 export default {
@@ -29,43 +22,61 @@ export default {
       type: Function,
       default: () => ({})
     },
+    validation: {
+      type: Boolean,
+      default: true,
+    },
     fileMimeTypes: {
       type: Array,
-      default: () => {
-        return [
-          "text/csv",
-          "text/x-csv",
-          "application/vnd.ms-excel",
-          "text/plain"
-        ];
-      }
+      default: () => {return ["text/csv","text/x-csv","application/vnd.ms-excel","text/plain"];}
     }
   },
   data() {
     return {
+      fileList: [],
+      formData: null,
+      fileSelected: false,
       isValidFileMimeType: false,
       file: null,
       csv: null
     };
   },
   methods: {
-    completeStep() {
-      //valida
-      //salva no store
-      this.load();
-      this.$message.success("This is a message of success");
-      return true;
+    handleRemove(file) {
+      const index = this.fileList.indexOf(file);
+      const newFileList = this.fileList.slice();
+      newFileList.splice(index, 1);
+      this.fileList = newFileList;
+      console.log('handleRemove done');
     },
-    load() {
-      const _this = this;
+    beforeUpload(file) {
+      this.fileSelected = false;
+      this.fileList = [];
+      const mimeType = file.type === "" ? mimeTypes.lookup(file.name) : file.type;
+      if (file) {
+          this.fileSelected = true;
+          this.isValidFileMimeType = this.validation ? this.validateMimeType(mimeType) : true;
+          if(this.isValidFileMimeType) this.fileList = [...this.fileList, file];
+      } else {
+          this.isValidFileMimeType = !this.validation;
+          this.fileSelected = false;
+      }
+      store.dispatch("setValidFile", this.isValidFileMimeType);
+      return false;
+    },
+    handleUpload() {
+      //const _this = this;
       this.readFile(output => {
-        _this.csv = get(Papa.parse(output, { skipEmptyLines: true }), "data");
+        this.csv = get(Papa.parse(output, { skipEmptyLines: true }), "data")
+        store.dispatch("setCsv", this.csv); 
+        store.dispatch("setFirstRow", get(this, "csv.0")); 
       });
-      //store.dispatch("setCsv", csvUpload);
-      console.log(_this.csv);
+      this.$message.success('upload successfully.');
     },
     readFile(callback) {
-      let file = this.file;
+      const { fileList } = this;
+      let file = fileList[0];
+      console.log('arquivo no readFile'); console.log(file);
       if (file) {
         let reader = new FileReader();
         reader.readAsText(file, "UTF-8");
@@ -75,27 +86,23 @@ export default {
         reader.onerror = function() {};
       }
     },
+    completeStep() {
+      this.handleUpload();
+      this.$message.success("This is a message of success");
+      return true;
+    },
     validFileMimeType(info) {
       let file = info.fileList[0];
       const mimeType =
         file.type === "" ? mimeTypes.lookup(file.name) : file.type;
       if (file) {
-        this.isValidFileMimeType = this.validation
-          ? this.validateMimeType(mimeType)
-          : true;
-        //this.$emit("setDataFromStep1", this.isValidFileMimeType);
-        (this.file = file),
-          console.log(
-            "debug-step1-validFileMimeType: " +
-              this.isValidFileMimeType.toString()
-          );
+        this.isValidFileMimeType = this.validation ? this.validateMimeType(mimeType) : true;
+        console.log("debug-step1-validFileMimeType: " + this.isValidFileMimeType.toString());
       } else {
         console.log("debug-step1-validFileMimeType: Inválido.");
         this.isValidFileMimeType = !this.validation;
-        //this.fileSelected = false;
-        //store.dispatch("setFileSelected", false);
       }
-      store.dispatch("setFileSelected", this.isValidFileMimeType);
+      store.dispatch("setValidFile", this.isValidFileMimeType);
       console.log("debug-step1-validFileMimeType: Concluido.");
     },
     validateMimeType(type) {
@@ -105,7 +112,7 @@ export default {
   computed: {
     showErrorMessage() {
       return this.fileSelected && !this.isValidFileMimeType;
-    }
+    },
   }
 };
 </script>

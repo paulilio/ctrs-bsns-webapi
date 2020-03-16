@@ -23,7 +23,7 @@
             <div class="steps-action">
               <a-button
                 v-if="current < steps.length - 1"
-                :disabled="!fileSelected"
+                :disabled="!s_isValidFile"
                 type="primary"
                 @click.prevent="next"
               >Próximo</a-button>
@@ -33,12 +33,14 @@
                 @click="$message.success('Processing complete!')"
               >Done</a-button>
               <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">Anterior</a-button>
-              <h1>{{ fileSelected }}</h1>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <h3>{{ s_csv }}</h3>
+
   </div>
 </template>
 
@@ -88,8 +90,11 @@ export default {
     disabledNextButton() {
       return !this.isValidFileMimeType;
     },
-    fileSelected() {
-      return store.state.fileSelected;
+    s_isValidFile() {
+      return store.state.isValidFile;
+    },
+    s_csv() {
+      return store.state.csv;
     }
   }
 };
