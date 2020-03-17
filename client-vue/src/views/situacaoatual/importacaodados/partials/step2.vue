@@ -11,7 +11,8 @@
         <tr v-for="(field, key) in fieldsToMap" :key="key">
           <td>{{ field.label }}</td>
           <td>
-            <select
+            <select 
+              :ref="`csv_uploader_map_${key}`"
               class="form-control"
               :name="`csv_uploader_map_${key}`"
               v-model="map[field.key]"
@@ -20,7 +21,6 @@
                 v-for="(column, key) in s_firstRow"
                 :key="key"
                 :value="key"
-                :selected="key == 1"
                 >{{ column }}</option
               >
             </select>
@@ -39,19 +39,29 @@ export default {
   props: {},
   data() {
     return {
+      map: {
+      },
       fieldsToMap: [
         { label: "Data Lançamento", key: "1" },
-        { label: "Nome do Cliente", key: "2" },
-        { label: "CPF do Cliente", key: "3" },
+        { label: "CPF/CNPJ do Cliente", key: "2" },
+        { label: "Nome do Cliente", key: "3" },
         { label: "Valor", key: "4" },
-        { label: "Forma de Recebimento", key: "5" },
-        { label: "Plano de Contas", key: "6" },
-        { label: "Unidade de Negócios", key: "7" },
-        { label: "Centro de Receitas", key: "8" },
-        { label: "Caixas e Bancos", key: "9" }
+        { label: "Data do Vencimento", key: "5" },
+        { label: "Data do Recebimento", key: "6" },
+        { label: "Forma de Recebimento", key: "7" },
+        { label: "Unidade de Negócios", key: "8" },
+        { label: "Plano de Contas", key: "9" },
+        { label: "Centro de Receitas", key: "10" },
+        { label: "Caixas/Bancos", key: "11" },
+        { label: "Descrição", key: "12" },
       ],
-      map: {}
     };
+  },
+  mounted() {
+    for (var m in this.fieldsToMap) {
+      this.map[this.fieldsToMap[m].key] = m;
+    }
+
   },
   methods: {
     completeStep() {
