@@ -38,9 +38,6 @@
         </div>
       </div>
     </div>
-
-    <h3>{{ s_csv }}</h3>
-
   </div>
 </template>
 

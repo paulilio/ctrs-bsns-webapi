@@ -8,7 +8,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(field, key) in fieldsToMap" :key="key">
+        <tr v-for="(field, key) in s_fieldsToMap" :key="key">
           <td>{{ field.label }}</td>
           <td>
             <select 
@@ -39,25 +39,12 @@ export default {
   props: {},
   data() {
     return {
-      map: {
-      },
-      fieldsToMap: [
-        { label: "Data Lançamento", key: "1" },
-        { label: "CPF/CNPJ do Cliente", key: "2" },
-        { label: "Nome do Cliente", key: "3" },
-        { label: "Valor", key: "4" },
-        { label: "Data do Vencimento", key: "5" },
-        { label: "Data do Recebimento", key: "6" },
-        { label: "Forma de Recebimento", key: "7" },
-        { label: "Unidade de Negócios", key: "8" },
-        { label: "Plano de Contas", key: "9" },
-        { label: "Centro de Receitas", key: "10" },
-        { label: "Caixas/Bancos", key: "11" },
-        { label: "Descrição", key: "12" },
-      ],
+      map: {},
+      fieldsToMap: [],
     };
   },
   mounted() {
+    this.fieldsToMap = store.state.fieldsToMap;
     for (var m in this.fieldsToMap) {
       this.map[this.fieldsToMap[m].key] = m;
     }
@@ -67,6 +54,7 @@ export default {
     completeStep() {
       //valida
       //salva no store
+      store.dispatch("setMap", this.map); 
       return true;
     },
     info() {
@@ -84,9 +72,11 @@ export default {
   },
   computed: {
     s_firstRow() {
-      console.log(store.state.firstRow);
       return store.state.firstRow;
-    }
+    },
+    s_fieldsToMap() {
+      return store.state.fieldsToMap;
+    },
   }
 };
 </script>

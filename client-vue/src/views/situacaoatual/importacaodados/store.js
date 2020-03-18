@@ -9,6 +9,21 @@ export const store = new Vuex.Store({
     isValidFile: false,
     csv: null,
     firstRow: null,
+    map: null,
+    fieldsToMap: [
+        { label: "Data Lançamento", key: "descDataLancamento" },
+        { label: "CPF/CNPJ do Cliente", key: "descCpfCnpjCliente" },
+        { label: "Nome do Cliente", key: "descNomeCliente" },
+        { label: "Valor", key: "descValor" },
+        { label: "Data do Vencimento", key: "descDataVencimento" },
+        { label: "Data do Recebimento", key: "descDataRecebimento" },
+        { label: "Forma de Recebimento", key: "descFormaRecebimento" },
+        { label: "Unidade de Negócios", key: "descUnidadeNegocio" },
+        { label: "Plano de Contas", key: "descPlanoContas" },
+        { label: "Centro de Receitas", key: "descCentoReceitas" },
+        { label: "Caixas/Bancos", key: "descBanco" },
+        { label: "Descrição", key: "descricao" },
+      ],
   },
   mutations: {
     SET_UPLOADING(state, value) {
@@ -23,6 +38,9 @@ export const store = new Vuex.Store({
     SET_FIRST_ROW(state, value) {
       state.firstRow = value;
     },
+    SET_MAP(state, value) {
+      state.map = value;
+    },
   },
   actions: {
     setUploading(context, value) {
@@ -36,6 +54,9 @@ export const store = new Vuex.Store({
     },
     setFirstRow(context, value) {
       context.commit("SET_FIRST_ROW", value);
+    },
+    setMap(context, value) {
+      context.commit("SET_MAP", value);
     },
   },
   getters: {
