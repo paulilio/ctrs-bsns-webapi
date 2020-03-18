@@ -30,8 +30,8 @@
               <a-button
                 v-if="current == steps.length - 1"
                 type="primary"
-                @click="$message.success('Processing complete!')"
-              >Done</a-button>
+                @click.prevent="done"
+              >Concluído</a-button>
               <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">Anterior</a-button>
             </div>
           </div>
@@ -81,7 +81,15 @@ export default {
     },
     prev() {
       this.current--;
-    }
+    },
+    done() {
+      var comp = this.steps[this.current].component;
+      if (this.$refs[comp].completeStep()) {
+        console.log('teste10');
+        this.current = 0;
+        store.state.reset()
+      }
+    },
   },
   computed: {
     disabledNextButton() {

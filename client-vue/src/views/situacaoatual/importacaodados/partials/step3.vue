@@ -1,7 +1,20 @@
 <template>
   <div>
 
-  <a-table :columns="columns" :dataSource="this.data">
+  <section v-if="errored">
+    <p>Pedimos desculpas, não estamos conseguindo recuperar as informações no momento. Por favor, tente novamente mais tarde.</p>
+  </section>
+  <section v-else>
+    <div v-if="loading">Carregando...</div>
+    <div
+      v-else
+      v-for="currency in info"
+      class="currency">
+      oi
+    </div>
+  </section>
+
+  <a-table :columns="columns" :dataSource="this.form.csv">
     <a slot="name" slot-scope="text">{{text}}</a>
     <p slot="expandedRowRender" slot-scope="record" style="margin: 0"> Cliente: {{record.descNomeCliente}} <br/><br/> Descrição: {{record.descricao}}</p>
   </a-table>
@@ -12,19 +25,36 @@
 <script>
 import { drop, every, forEach, get, isArray, map, set } from 'lodash';
 import { store } from "../store";
+import axios from 'axios';
 
 export default {
+  props: {
+    callback: {
+        type: Function,
+        default: () => ({})
+    },
+    catch: {
+        type: Function,
+        default: () => ({})
+    },
+    finally: {
+        type: Function,
+        default: () => ({})
+    },
+  },
   data() {
     return {
       columns: [],
       csv: [],
       map: [],
       fieldsToMap: [],
-      data: [],
       form: {
         csv: null,
       },
-    };
+      url:'https://localhost:44396/api/sales/ImportCSV',
+      loading: false,
+      errored: false,
+    }
   },
   mounted() {
     this.fieldsToMap = store.state.fieldsToMap;
@@ -40,33 +70,16 @@ export default {
       });
     });
 
-    this.data = map(this.csv, (row) => {
+    this.form.csv = map(this.csv, (row) => {
       let newRow = {};
       forEach(this.map, (column, field) => {
           set(newRow, field, get(row, column));
       });
       return newRow;
     });
-
-/*
-    this.columns = map(this.csv, (row) => {
-            let newRow = {};
-            forEach(this.map, (column, field) => {
-                set(newRow, []], get(row, column));
-            });
-            return newRow;
-        });
-
-    console.log('colunas'); console.log(this.columns);
-    this.form.csv = this.buildMappedCsv();
-    */
   },
   methods: {
     buildMappedCsv() {
-        //const _this = this;
-        //let csv = this.hasHeaders ? drop(this.csv) : this.csv;
-
-
         return map(this.csv, (row) => {
             let newRow = {};
             forEach(this.map, (column, field) => {
@@ -76,8 +89,20 @@ export default {
         });
     },
     completeStep() {
-      //valida
-      //salva no store
+      const _this = this;
+      this.$emit('input', this.form.csv);
+      this.$message.loading('Loading...');
+      axios.post(this.url, this.form).then(response => {
+          console.log('teste1');
+          this.$message.success("Importação concluída com sucesso");
+          return true;
+      }).catch(response => {
+          this.$message.error("Falha na importação");
+          console.error(response);
+          console.log('test2');
+          return false;
+      }).finally(() => this.loading = false);
+      console.log('teste3');
       return true;
     },
     info() {

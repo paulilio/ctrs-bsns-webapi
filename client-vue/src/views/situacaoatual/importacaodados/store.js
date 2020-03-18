@@ -58,6 +58,9 @@ export const store = new Vuex.Store({
     setMap(context, value) {
       context.commit("SET_MAP", value);
     },
+    reset(context, value) {
+      context.commit("RESET", value);
+    },
   },
   getters: {
     //state: state => state
