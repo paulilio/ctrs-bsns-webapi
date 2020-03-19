@@ -42,6 +42,11 @@ namespace CtrsBsnsWebAPI.Controllers
             return this.Ok();
         }
 
+        [HttpGet("ByFields/{search}")]
+        public ActionResult<IEnumerable<string>> GetByFields()
+        {
+            return new string[] { "valueC", "valueD" };
+        }
 
         // HttpPost: api/sales/ImportCSV?csv=
         [HttpPost]

@@ -16,9 +16,9 @@ export const getLeftMenuData = [
         url: "/situacaoatual/importacaodados"
       },
       {
-        title: "Wizard",
-        key: "wizard",
-        url: "/wizard"
+        title: "Faturamento",
+        key: "faturamento",
+        url: "/situacaoatual/faturamento",
       },
       {
         title: "Contas a Receber",
@@ -59,9 +59,6 @@ export const getLeftMenuData = [
     ]
   },
   {
-    divider: true
-  },
-  {
     title: "Cadastros Básicos",
     key: "defaultPages",
     icon: "icmn icmn-file-text",
@@ -85,7 +82,22 @@ export const getLeftMenuData = [
         pro: true
       }
     ]
-  }
+  },
+  {
+    divider: true
+  },
+  {
+    title: "Técnico",
+    key: "defaultPages1",
+    icon: "icmn icmn-file-text",
+    children: [
+        {
+        title: "Wizard",
+        key: "wizard",
+        url: "/wizard"
+      },
+    ]
+  },
 ];
 export const getTopMenuData = [
   {

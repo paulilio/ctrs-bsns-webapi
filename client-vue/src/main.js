@@ -45,7 +45,8 @@ import {
   Pagination,
   notification,
   Drawer,
-  message
+  message,
+  DatePicker,
 } from "ant-design-vue";
 
 Vue.use(Avatar);
@@ -82,6 +83,7 @@ Vue.use(InputNumber);
 Vue.use(Drawer);
 Vue.use(Switch);
 Vue.use(notification);
+Vue.use(DatePicker);
 
 Vue.prototype.$notification = notification;
 Vue.prototype.$message = message;

@@ -36,6 +36,14 @@ const router = new Router({
         },
         // Faturamento
         {
+          path: "/situacaoatual/faturamento",
+          meta: {
+            title: "Faturamento"
+          },
+          component: () => import("./views/situacaoatual/faturamento")
+        },
+        // Técnico-Wizard
+        {
           path: "/wizard",
           meta: {
             title: "Exemplo Wizard"
