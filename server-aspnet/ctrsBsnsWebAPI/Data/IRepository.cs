@@ -9,6 +9,22 @@ namespace CtrsBsnsWebAPI.Data
 {
     public interface IRepository<T> where T : class
     {
+        //GERAL
+        void Add<T>(T entity);
+        void Update<T>(T entity);
+        void Delete<T>(T entity);
+        Task<bool> SaveChangesAsync();
+
+        //FATURAMENTO
+        Task<Faturamento[]> GetFaturamentosAsyncByJsonFields(string jsParam);
+        public Result SaveSalesImport(string json);
+
+
+        //EXEMPLOS
+        // Exemplos Task<Faturamento[]> GetAllAlunosAsync(bool includeProfessor);
+        // Task<Aluno> GetAlunoAsyncById(int AlunoId, bool includeProfessor);
+
+        /*
         void Delete(T entityToDelete);
         void Delete(object id);
         IEnumerable<T> Get(
@@ -21,7 +37,9 @@ namespace CtrsBsnsWebAPI.Data
         void Add(T entity);
         void Update(T entityToUpdate);
 
-        public Result SaveSalesImport(string json);
+        */
+
+
 
     }
 }

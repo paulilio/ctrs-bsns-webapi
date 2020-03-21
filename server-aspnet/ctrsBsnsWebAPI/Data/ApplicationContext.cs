@@ -36,6 +36,7 @@ namespace CtrsBsnsWebAPI.Data
         public string resultValue { get; set; }
     }
 
+    //Contexto de gestão de dados da aplicação
     public class ApplicationContext : DbContext
     {
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

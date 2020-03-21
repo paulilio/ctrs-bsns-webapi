@@ -25,3 +25,7 @@ yarn.lock*
 bin
 obj
 _
+storage.ide*
+.dtbcache
+.dtbcachestorage.ide
+
