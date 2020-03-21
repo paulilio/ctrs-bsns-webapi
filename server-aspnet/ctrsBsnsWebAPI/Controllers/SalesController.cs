@@ -42,10 +42,30 @@ namespace CtrsBsnsWebAPI.Controllers
             return this.Ok();
         }
 
-        [HttpGet("ByFields/{search}")]
+        [HttpGet("ByJsonFields/{search}")]
         public ActionResult<IEnumerable<string>> GetByFields()
         {
-            return new string[] { "valueC", "valueD" };
+            try
+            {
+                Result _result = _repo.SaveSalesImport(json);
+
+                if (_result.id == 200)
+                    return this.Ok();
+                else
+                    throw new System.InvalidOperationException(_result.resultValue);
+            }
+            catch (InvalidOperationException ex)
+            {
+                //code specifically for a ArgumentNullException
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou: " + ex.Message);
+                //return BadRequest();
+            }
+
+            catch (Exception ex)
+            {
+                //return this.StatusCode(StatusCodes.Status400BadRequest);
+                throw;
+            }
         }
 
         // HttpPost: api/sales/ImportCSV?csv=
