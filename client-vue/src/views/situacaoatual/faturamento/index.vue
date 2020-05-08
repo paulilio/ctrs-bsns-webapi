@@ -8,21 +8,13 @@
     <div class="row">
       <div class="col-xl-7">
 
-          <a-dropdown-button @click="handleButtonClick" :class="$style.searchDropdown">
-          Unidade
-          <a-menu slot="overlay" @click="handleMenuClick">
-            <a-menu-item key="1"><a-icon type="user" />1st menu item</a-menu-item>
-            <a-menu-item key="2"><a-icon type="user" />2nd menu item</a-menu-item>
-            <a-menu-item key="3"><a-icon type="user" />3rd item</a-menu-item>
-          </a-menu>
-        </a-dropdown-button>
 
-          <a-dropdown-button @click="handleButtonClick" :class="$style.searchDropdown">
-          Centro de Custo
+         <a-dropdown-button v-for="(type, index) in filtros" :key="index" @click="handleButtonClick" :class="$style.searchDropdown">
+          {{index}}
           <a-menu slot="overlay" @click="handleMenuClick">
-            <a-menu-item key="1"><a-icon type="user" />1st menu item</a-menu-item>
-            <a-menu-item key="2"><a-icon type="user" />2nd menu item</a-menu-item>
-            <a-menu-item key="3"><a-icon type="user" />3rd item</a-menu-item>
+            <a-menu-item v-for="(item) in type" :value="item.id">
+              <a-icon type="user" />{{item.value}}
+              </a-menu-item>
           </a-menu>
         </a-dropdown-button>
 
@@ -99,7 +91,7 @@ export default {
     return {
       chartCardData: data.chartCardData,
       dateFormat: 'DD/MM/YYYY',
-
+      filtros: null,
       columns: [
         { title: "Data Lançamento", dataIndex: "descDataLancamento" },
         { title: "CPF/CNPJ do Cliente", dataIndex: "descCpfCnpjCliente" },
@@ -122,9 +114,10 @@ export default {
   },
   mounted() {
     axios
-    .get('https://api.coindesk.com/v1/bpi/currentprice.json')
-    .then(response => {
-      this.info = response.data.bpi
+    .get('http://localhost:3000/filtros')
+    .then(res => {
+      console.log(res.data);
+      this.filtros = res.data
     })
     .catch(error => {
       console.log(error)

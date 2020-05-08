@@ -67,6 +67,7 @@ export default {
     handleUpload() {
       //const _this = this;
       this.readFile(output => {
+//Doc Papa-parse https://www.papaparse.com/demo
         this.csv = get(Papa.parse(output, { skipEmptyLines: true }), "data")
         store.dispatch("setCsv", this.csv); 
         store.dispatch("setFirstRow", get(this, "csv.0")); 

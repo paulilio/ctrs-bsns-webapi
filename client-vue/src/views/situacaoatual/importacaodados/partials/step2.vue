@@ -23,6 +23,7 @@
                 :value="key"
                 >{{ column }}</option
               >
+              <option value="99" key="99">Não se aplica</option>
             </select>
           </td>
         </tr>
@@ -44,9 +45,12 @@ export default {
     };
   },
   mounted() {
+
     this.fieldsToMap = store.state.fieldsToMap;
     for (var m in this.fieldsToMap) {
-      this.map[this.fieldsToMap[m].key] = m;
+      //Prenchimento automatico desativado, para forçar usuário a selecionar.
+      //this.map[this.fieldsToMap[m].key] = m;
+      this.map[this.fieldsToMap[m].key] = null;
     }
 
   },

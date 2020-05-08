@@ -97,6 +97,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.$nprogress.start()
+          
           this.$auth.login(values.email, values.password)
             .then(() => {
               this.$nprogress.done()

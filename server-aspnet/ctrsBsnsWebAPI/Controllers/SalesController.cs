@@ -11,7 +11,6 @@ using System.Text.Json;
 namespace CtrsBsnsWebAPI.Controllers
 {
 
-
     [Route("api/[controller]")]
     [ApiController]
     public class SalesController : ControllerBase
@@ -43,7 +42,7 @@ namespace CtrsBsnsWebAPI.Controllers
         }
 
         [HttpGet("ByJsonFields/{search}")]
-        public ActionResult<IEnumerable<string>> GetByFields()
+        public ActionResult<IEnumerable<string>> GetByFields(string json)
         {
             try
             {
@@ -82,7 +81,7 @@ namespace CtrsBsnsWebAPI.Controllers
                 
                 if (_result.id == 200)
                     return this.Ok();
-                else 
+                else /**/
                     throw new System.InvalidOperationException(_result.resultValue);
             }
             catch (InvalidOperationException ex)
