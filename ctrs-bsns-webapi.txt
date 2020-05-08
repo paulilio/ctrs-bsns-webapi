@@ -1,0 +1,6 @@
+NomeSistema: Controllership Business (controladoria empresarial)
+Abreviação: ctrs-bsns
+Arquitetura: WebAPI
+BancoDados: ctrsbsns
+TableAbrev: ctbs
+

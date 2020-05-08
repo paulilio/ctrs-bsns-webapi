@@ -15,18 +15,18 @@ namespace CtrsBsnsWebAPI.Controllers
     public class SituacaoAtualController : ControllerBase
     {
         public IRepository<ApplicationContext> _repo { get; }
-        
+
         //Test: HttpPost: api/situacaoatual/importcsv?csv=
         [HttpPost]
         [Route("importcsv")]
-        public ActionResult<IEnumerable<string>> (dynamic data)
+        public ActionResult<IEnumerable<string>> Importcsv(dynamic data)
         {
             try
             {
                 JsonElement jsonResult = data;
                 string json = JObject.Parse(jsonResult.GetRawText()).SelectToken("$.csv").ToString();
 
-                Result _result = _repo.SaveSalesImport(json);
+                Result _result = null;//_repo.SaveSalesImport(json);
 
                 if (_result.id == 200)
                     return this.Ok();
@@ -48,3 +48,5 @@ namespace CtrsBsnsWebAPI.Controllers
 
         }
     }
+
+}

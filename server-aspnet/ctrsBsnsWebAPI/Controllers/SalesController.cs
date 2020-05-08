@@ -46,7 +46,7 @@ namespace CtrsBsnsWebAPI.Controllers
         {
             try
             {
-                Result _result = _repo.SaveSalesImport(json);
+                Result _result = null;//_repo.SaveSalesImport(json);
 
                 if (_result.id == 200)
                     return this.Ok();
@@ -77,7 +77,7 @@ namespace CtrsBsnsWebAPI.Controllers
                 JsonElement jsonResult = data;
                 string json = JObject.Parse(jsonResult.GetRawText()).SelectToken("$.csv").ToString();
 
-                Result _result = _repo.SaveSalesImport(json);
+                Result _result = null;// _repo.SaveSalesImport(json);
                 
                 if (_result.id == 200)
                     return this.Ok();

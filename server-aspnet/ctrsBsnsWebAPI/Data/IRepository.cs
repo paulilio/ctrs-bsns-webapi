@@ -11,7 +11,7 @@ namespace CtrsBsnsWebAPI.Data
     {
         //FATURAMENTO
         //Task<Faturamento[]> GetFaturamentosAsyncByJsonFields(string jsParam);
-        public Result ImportCSV(string json, string dsNomeArquivo, int idEmpresa, int idUsuario, char cdTipo)
+        public Result ImportCSV(string json, string dsNomeArquivo, int idEmpresa, int idUsuario, char cdTipo);
 
     }
 }
