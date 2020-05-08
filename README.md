@@ -10,8 +10,9 @@ json-server --watch banco.json
 
 ## Inicializa Interface
 
-Na pasta client-vue, verifique a existencia da pasta node_modules.
-Se preciso realiza a instalação dos módulos
+Dentro pasta client-vue, verifique a existencia da pasta node_modules.
+Esta pasta não é guardada no repositório git.
+Se preciso realiza a instalação dos módulos.
 
 ```
 npm install
@@ -21,7 +22,7 @@ npm audit fix
 Para inicializar o projeto, execute o comando:
 
 ```
-npm run serve
+npm run serve -- --mode modelo
 ```
 
 ## Inicializa webAPI
