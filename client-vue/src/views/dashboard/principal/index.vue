@@ -10,6 +10,7 @@
         <div class="card">
           <div class="card-body">
             &nbsp;
+            {{database}}
           </div>
         </div>
       </div>
@@ -18,5 +19,21 @@
 </template>
 
 <script>
+//import config from "../../../../../config.json";
+
+export default{
+ data() {
+    return {
+      database: null,
+    };
+ },
+ mounted() {
+   //this.database = config.map((item) => {return item.database})
+   this.database = process.env.VUE_APP_ENV_DESC;
+
+ }
+
+}
+
 
 </script>
