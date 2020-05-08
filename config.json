@@ -1,8 +1,0 @@
-[
-    {
-    "database": "192.168.0.189.128:3306",
-    "server-api": "http://localhost/api",
-    "version": 0.1,
-    "production": false
-    }
-]
