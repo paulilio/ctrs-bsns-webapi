@@ -17,28 +17,55 @@ namespace CtrsBsnsWebAPI.Data
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationContext _context;
-        private DbSet<T> _dbSet;
+        //private DbSet<T> _dbSet;
 
         public Repository(ApplicationContext context)
         {
             _context = context;
-            _dbSet = _context.Set<T>();
+            //_dbSet = _context.Set<T>();
         }
-        
-        public Result ImportCSV(string json, string dsNomeArquivo, int idEmpresa, int idUsuario, char cdTipo)
+
+        //public void Add<T>(T entity) where T : class {_context.Add(entity);}
+        //public void Update<T>(T entity) where T : class {_context.Update(entity);}
+        //public void Delete<T>(T entity) where T : class {_context.Remove(entity);}
+        //public async Task<bool> SaveChangesAsync(){return (await _context.SaveChangesAsync()) > 0;}
+
+        public async Task<Result> GetFiltros(string jsonParams)
+        {
+            Result r = await _context.Set<Result>().FromSql<Result>(
+                "call getSituacaoAtualFiltro(@jsonParams, @result); SELECT 0 id, @result resultValue;"
+                , new MySqlParameter("@jsonParams", MySqlDbType.LongText) { Value = jsonParams, ParameterName = "@jsonParams" }
+                ).FirstOrDefaultAsync();
+
+            dynamic obj = JsonConvert.DeserializeObject(r.resultValue);
+            return new Result() { id = obj.status, resultValue = ((obj.result == null) ? "Erro não especificado!" : obj.result) };
+        }
+
+        public async Task<Result> GetAllSituacaoAtualAsync(string jsonParams)
+        {
+            Result r = await _context.Set<Result>().FromSql<Result>(
+                "call getSituacaoAtualByJsonFields(@jsonParams, @result); SELECT 0 id, @result resultValue;"
+                , new MySqlParameter("@jsonParams", MySqlDbType.LongText) { Value = jsonParams, ParameterName = "@jsonParams" }
+                ).FirstOrDefaultAsync();
+
+            dynamic obj = JsonConvert.DeserializeObject(r.resultValue);
+            return new Result() { id = obj.status, resultValue = ((obj.result == null) ? "Erro não especificado!" : obj.result) };
+        }
+
+        public Result ImportCSV(string json, string dsNomeArquivo, int idUsuario, int idEmpresa, char cdTipo)
         {
             try
             {
                 Result r = _context.Set<Result>().FromSql<Result>(
-                    "call salesInsertImportData(@JsonPayload, @fileName, @result); SELECT 0 id, @result resultValue;"
-                    , new MySqlParameter("@JsonPayload", MySqlDbType.LongText) { Value = json, ParameterName = "@JsonPayload" }
-                    , new MySqlParameter("@dsNomeArquivo", MySqlDbType.String) { Value = dsNomeArquivo, ParameterName = "@dsNomeArquivo" }
-                    , new MySqlParameter("@idEmpresa", MySqlDbType.Int32) { Value = idEmpresa, ParameterName = "@idEmpresa" }
-                    , new MySqlParameter("@idUsuario", MySqlDbType.Int32) { Value = idUsuario, ParameterName = "@idUsuario" }
-                    , new MySqlParameter("@tipo", MySqlDbType.String) { Value = cdTipo, ParameterName = "@cdTipo" }
+                    "call proc_ImportCSV(@p_json, @p_dsNomeArquivo, @p_IdEmpresa, @p_idUsuario, @p_cdTipo, @result); SELECT 0 id, @result resultValue;"
+                    , new MySqlParameter("@p_json", MySqlDbType.LongText) { Value = json, ParameterName = "@p_json" }
+                    , new MySqlParameter("@p_dsNomeArquivo", MySqlDbType.String) { Value = dsNomeArquivo, ParameterName = "@p_dsNomeArquivo" }
+                    , new MySqlParameter("@p_IdEmpresa", MySqlDbType.Int32) { Value = idEmpresa, ParameterName = "@p_IdEmpresa" }
+                    , new MySqlParameter("@p_idUsuario", MySqlDbType.Int32) { Value = idUsuario, ParameterName = "@p_idUsuario" }
+                    , new MySqlParameter("@p_cdTipo", MySqlDbType.String) { Value = cdTipo, ParameterName = "@p_cdTipo" }
                     ).FirstOrDefault();
                 dynamic obj = JsonConvert.DeserializeObject(r.resultValue);
-                return new Result() { id = obj.status, resultValue = ((obj.result == null) ? "Erro n�o especificado!" : obj.result) };
+                return new Result() { id = obj.status, resultValue = ((obj.result == null) ? "Erro não especificado!" : obj.result) };
             }
             catch (Exception ex)
             {

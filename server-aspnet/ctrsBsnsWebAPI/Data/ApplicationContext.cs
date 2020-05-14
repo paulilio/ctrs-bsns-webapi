@@ -29,6 +29,7 @@ namespace CtrsBsnsWebAPI.Data
 
     */
 
+
     public class Result
     {
         [Key]
@@ -44,11 +45,10 @@ namespace CtrsBsnsWebAPI.Data
         //    optionsBuilder.UseMySql(@"server=localhost;database=BookStoreDb;uid=root;password=;");
         //}
 
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
-        {
-       }
-       public DbSet<Sales> Sales { get; set; }
-       public DbSet<Result> Result { get; set; }
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
+        public DbSet<Result> Result { get; set; }
+        public DbSet<SituacaoAtual> SituacaoAtual { get; set; }
+       
 
         //public DbSet<SalesModel> Sales { get; set; }
 

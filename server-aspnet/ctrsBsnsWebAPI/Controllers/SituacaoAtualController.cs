@@ -15,18 +15,83 @@ namespace CtrsBsnsWebAPI.Controllers
     public class SituacaoAtualController : ControllerBase
     {
         public IRepository<ApplicationContext> _repo { get; }
+        public SituacaoAtualController(IRepository<ApplicationContext> repo)
+        {
+            _repo = repo;
+        }
 
-        //Test: HttpPost: api/situacaoatual/importcsv?csv=
+        //Test: HttpPost: situacaoatual/GetFiltro jsonParams
+        [HttpGet("GetFiltro")]
+        [Route("GetFiltro")]
+        public async Task<ActionResult<IEnumerable<string>>> GetFiltro(string jsonParams)
+        {
+            try
+            {
+                Result _result = await _repo.GetFiltros(jsonParams);
+
+                if (_result.id == 200)
+                    return this.Ok(_result.resultValue);
+                else
+                    throw new System.InvalidOperationException(_result.resultValue);
+            }
+            catch (InvalidOperationException ex)
+            {
+                //code specifically for a ArgumentNullException
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou: " + ex.Message);
+                //return BadRequest();
+            }
+
+            catch (Exception ex)
+            {
+                //return this.StatusCode(StatusCodes.Status400BadRequest);
+                throw;
+            }
+        }
+
+
+        //Test: HttpPost: situacaoatual/GetList jsonParams
+        [HttpGet("GetList")]
+        [Route("GetList")]
+        public async Task<ActionResult<IEnumerable<string>>> GetList(string jsonParams)
+        {
+            try
+            {
+                Result _result = await _repo.GetAllSituacaoAtualAsync(jsonParams);
+
+                if (_result.id == 200)
+                    return this.Ok(_result.resultValue);
+                else
+                    throw new System.InvalidOperationException(_result.resultValue);
+            }
+            catch (InvalidOperationException ex)
+            {
+                //code specifically for a ArgumentNullException
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou: " + ex.Message);
+                //return BadRequest();
+            }
+
+            catch (Exception ex)
+            {
+                //return this.StatusCode(StatusCodes.Status400BadRequest);
+                throw;
+            }
+        }
+
+        //Test: HttpPost: api/situacaoatual/Importcsv?data=
         [HttpPost]
-        [Route("importcsv")]
+        [Route("Importcsv")]
         public ActionResult<IEnumerable<string>> Importcsv(dynamic data)
         {
             try
             {
                 JsonElement jsonResult = data;
-                string json = JObject.Parse(jsonResult.GetRawText()).SelectToken("$.csv").ToString();
-
-                Result _result = null;//_repo.SaveSalesImport(json);
+                Result _result = _repo.ImportCSV(
+                      JObject.Parse(jsonResult.GetRawText()).SelectToken("$.csv").ToString()
+                    , JObject.Parse(jsonResult.GetRawText()).SelectToken("$.dsNomeArquivo").ToString()
+                    , Convert.ToInt32(JObject.Parse(jsonResult.GetRawText()).SelectToken("$.idUsuario"))
+                    , Convert.ToInt32(JObject.Parse(jsonResult.GetRawText()).SelectToken("$.idEmpresa"))
+                    , Convert.ToChar(JObject.Parse(jsonResult.GetRawText()).SelectToken("$.cdTipo").ToString())
+                    );
 
                 if (_result.id == 200)
                     return this.Ok();
