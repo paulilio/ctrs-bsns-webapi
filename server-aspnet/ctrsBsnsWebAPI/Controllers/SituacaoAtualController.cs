@@ -48,14 +48,23 @@ namespace CtrsBsnsWebAPI.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("GetList2")]
+        public string GetList2([FromBody] dynamic data)
+        {
+            JsonElement jsonResult = data;
+            return JObject.Parse(jsonResult.GetRawText()).SelectToken("$").ToString();
+        }
 
         //Test: HttpPost: situacaoatual/GetList jsonParams
-        [HttpGet("GetList")]
+        [HttpPost("GetList")]
         [Route("GetList")]
-        public async Task<ActionResult<IEnumerable<string>>> GetList(string jsonParams)
+        public async Task<ActionResult<IEnumerable<string>>> GetList(dynamic data)
         {
             try
             {
+                JsonElement jsonResult = data;
+                string jsonParams = JObject.Parse(jsonResult.GetRawText()).SelectToken("$.params").ToString();
                 Result _result = await _repo.GetAllSituacaoAtualAsync(jsonParams);
 
                 if (_result.id == 200)
