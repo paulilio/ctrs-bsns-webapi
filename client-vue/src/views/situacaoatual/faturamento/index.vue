@@ -1,5 +1,18 @@
 <template>
   <div>
+
+    <div class="utils__title mb-3">
+      <strong class="text-uppercase font-size-16">ÚLTIMAS ESTATÍSTICAS</strong>
+    </div>
+    <div class="row">
+      <div class="col-xl-4" v-for="(chartCard, index) in chartCardData" :key="index">
+        <cui-chart-card
+          :title="chartCard.title"
+          :amount="chartCard.amount"
+          :chartData="chartCard.chartData"
+        />
+      </div>
+    </div>
     <div :class="$style.wrapper">
       <div :class="$style.searchHeader">
         <div class="row">
@@ -45,11 +58,20 @@
 
 -->
 
+
+
+
+
+
+
+<!--
     <div class="row">
       <div class="col-lg-12">
+-->
         <div class="card">
           <div class="card-header">
-            <div class="utils__title">
+
+            <div class="utils__title">+
               <strong>Faturamento</strong>
             </div>
           </div>
@@ -93,10 +115,59 @@
             </p>
             </a-table>
           </div>
+
+
+      </div>
+      <div class="card">
+
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <h5 class="text-black">
+                <strong>Faturamento/Categoria</strong>
+              </h5>
+              <div class="mb-5">
+                <vue-c3 :handler="pie" class="height-300"></vue-c3>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <h5 class="text-black">
+                <strong>Faturamento</strong>
+              </h5>
+              <div class="mb-5">
+                <vue-c3 :handler="zoom" class="height-300"></vue-c3>
+              </div>
+            </div>
         </div>
+
       </div>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+<!--
+    </div>
   </div>
+-->
+
+
 </template>
 
 <script>
@@ -105,10 +176,14 @@ import axios from "axios";
 import data from "./data.json";
 import moment from "moment";
 import CuiChartCard from "@/components/CleanUIComponents/ChartCard";
+import Vue from 'vue'
+import VueC3 from 'vue-c3';
+import 'c3/c3.min.css'
 
 export default {
   components: {
-    CuiChartCard
+    CuiChartCard,
+        VueC3,
   },
   data() {
     return {
@@ -117,6 +192,8 @@ export default {
       dateLimits: null,
       myArray: [],
       filtros: null,
+      pie: new Vue(),
+      zoom: new Vue(),
       filtrosRequest: null,
       columns: [
         { title: "#", dataIndex: "idFaturamento", sorter: true},
@@ -132,7 +209,13 @@ export default {
       ],
       datasource: null,
       pagination: {},
-      loading: false
+      loading: false,
+      colors: {
+        primary: '#01a8fe',
+        def: '#acb7bf',
+        success: '#46be8a',
+        danger: '#fb434a',
+      },
     };
   },
   created() {
@@ -143,10 +226,51 @@ export default {
         const params = new URLSearchParams();
         params.append('jsonParams', 'valores');
         return params;
+    },
+
+    zoomOptions() {
+      return {
+        data: {
+          x: 'x',
+          columns: [
+            ['x', '1', '2', '3', '4', '5', '9'],
+//            ['x', '20130101', '20130102', '20130103', '20130104', '20130105', '20130106'],
+            ['data1', 30, 200, 100, 400, 150, 250],
+            ['data2', 130, 340, 200, 500, 250, 350]
+          ],
+          axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    format: '%Y-%m-%d'
+                }
+            }
+          },
+          colors: {
+            Sample: this.colors.primary,
+          },
+        },
+        zoom: {
+          enabled: !0,
+        },
+      }
+    },
+    pieOptions() {
+      return {
+        data: {
+          columns: [['Primary', 30], ['Success', 120]],
+          type: 'pie',
+        },
+        color: {
+          pattern: [this.colors.primary, this.colors.success],
+        },
+      }
     }
   },
   mounted() {
     this.fetch();
+    this.zoom.$emit('init', this.zoomOptions)
+    this.pie.$emit('init', this.pieOptions);
     axios
       .get("https://localhost:44396/api/SituacaoAtual/GetFiltro")
       .then(res => {
@@ -232,15 +356,15 @@ export default {
         url: "https://localhost:44396/api/SituacaoAtual/GetList",
         headers: {},
         data: {
-          params: JSON.stringify(this.filtrosRequest).replace(/\[|\]/g, ""), // remove brackets
+          params: JSON.stringify(this.filtrosRequest), //.replace(/\[|\]/g, ""), // remove brackets
         }
       })
       .then(res => {
-        console.log(res.data);
-        this.datasource = res.data;
+        console.log('dOK'+res.data);
+        this.datasource = (res.data == '') ? null : res.data;
       })
       .catch(error => {
-        console.log(error);
+        console.log('dError'+error);
         this.errored = true;
       })
       .finally(() => {

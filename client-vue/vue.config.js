@@ -1,6 +1,7 @@
 const antdTheme = require("./src/theme.js");
 module.exports = {
   publicPath: "./",
+  lintOnSave: false,
   pwa: {
     iconPaths: {
       favicon32: "./favicon.png",

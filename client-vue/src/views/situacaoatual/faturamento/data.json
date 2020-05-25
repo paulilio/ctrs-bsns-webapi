@@ -1,8 +1,8 @@
 {
   "chartCardData": [
     {
-      "title": "Transactions",
-      "amount": "1240",
+      "title": "Faturamento Médio Mensal",
+      "amount": "12.560,00",
       "chartData": {
         "series": [
           [
@@ -18,8 +18,8 @@
       }
     },
     {
-      "title": "Income",
-      "amount": "$1,152",
+      "title": "Registros Importados",
+      "amount": "1.152",
       "chartData": {
         "series": [
           [
@@ -35,21 +35,8 @@
       }
     },
     {
-      "title": "Outcome",
-      "amount": "$240.56",
-      "chartData": {
-        "series": [
-          [
-            42,
-            40,
-            80,
-            67,
-            84,
-            74,
-            97
-          ]
-        ]
-      }
+      "title": "Última Importação",
+      "amount": "24-05-2020"
     }
   ],
   "paymentAccountsData": [
@@ -184,3 +171,4 @@
     }
   ]
 }
+

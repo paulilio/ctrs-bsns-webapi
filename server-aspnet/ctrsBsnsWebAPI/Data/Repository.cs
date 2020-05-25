@@ -49,7 +49,7 @@ namespace CtrsBsnsWebAPI.Data
                 ).FirstOrDefaultAsync();
 
             dynamic obj = JsonConvert.DeserializeObject(r.resultValue);
-            return new Result() { id = obj.status, resultValue = ((obj.result == null) ? "Erro não especificado!" : obj.result) };
+            return new Result() { id = obj.status, resultValue = ((obj.result == null && obj.status != 200) ? "Erro não especificado!" : obj.result) };
         }
 
         public Result ImportCSV(string json, string dsNomeArquivo, int idUsuario, int idEmpresa, char cdTipo)
