@@ -17,17 +17,19 @@ END;
 select REPLACE(REPLACE(REPLACE(json_object('filtros', JSON_ARRAYAGG(content), "limites", JSON_ARRAYAGG(limites), "stats", stats),': ["{',':  [{'),'}"],','}],'),"\\","")
 INTO select_result FROM (
 SELECT GROUP_CONCAT(content) content, MAX(limites) limites, MAX(stats) stats FROM (
-  SELECT CASE WHEN dsUnidadeNegocio IS NULL THEN NULL ELSE json_object( 'Unidade de Negócio',JSON_ARRAYAGG(json_object('id', dsUnidadeNegocio, 'value', dsUnidadeNegocio))) END AS content, null as limites, null as stats FROM (SELECT DISTINCT dsUnidadeNegocio FROM co_faturamento ORDER BY dsUnidadeNegocio ASC ) co_fa_un
-	UNION ALL
-  SELECT CASE WHEN dsCentroReceita IS NULL THEN NULL ELSE json_object( 'Centro de Receita',JSON_ARRAYAGG(json_object('id', dsCentroReceita, 'value', dsCentroReceita))) END AS content, null as limites, null as stats FROM (SELECT DISTINCT dsCentroReceita FROM co_faturamento ORDER BY dsCentroReceita ASC ) co_fa_ce
+  SELECT CASE WHEN dsUnidadeNegocio IS NULL THEN NULL ELSE json_object( 'dsUnidadeNegocio' ,JSON_ARRAYAGG(json_object('id', dsUnidadeNegocio, 'value', dsUnidadeNegocio))) END AS content, null as limites, null as stats FROM (SELECT DISTINCT dsUnidadeNegocio FROM co_faturamento ORDER BY dsUnidadeNegocio ASC ) co_fa_un
+  UNION ALL
+  SELECT CASE WHEN dsCentroReceita IS NULL THEN NULL ELSE json_object( 'dsCentroReceita' ,JSON_ARRAYAGG(json_object('id', dsCentroReceita, 'value', dsCentroReceita))) END AS content, null as limites, null as stats FROM (SELECT DISTINCT dsCentroReceita FROM co_faturamento ORDER BY dsCentroReceita ASC ) co_fa_ce
+  UNION ALL
+  SELECT CASE WHEN dsFormaRecebimento IS NULL THEN NULL ELSE json_object( 'dsFormaRecebimento' ,JSON_ARRAYAGG(json_object('id', dsFormaRecebimento, 'value', dsFormaRecebimento))) END AS content, null as limites, null as stats FROM (SELECT DISTINCT dsFormaRecebimento FROM co_faturamento ORDER BY dsFormaRecebimento ASC ) co_fa_ce
   UNION ALL
   SELECT null as content, json_object('max', DATE_FORMAT(dtMax, '%Y-%m-%d'), 'min', DATE_FORMAT(dtMin, '%Y-%m-%d')) limites, null as stats FROM (SELECT DISTINCT MAX(fa.dtDataEmissao) dtMax, MIN(fa.dtDataEmissao) dtMin FROM co_faturamento fa ) as fa
   UNION ALL  
 	SELECT null as content, null as limites,
 		JSON_ARRAY(
-			 json_object('vlMedioMensal', FormatCurrancyBR(vlMedioMensal))
-			,json_object('qtTotalRegistro', qtTotalRegistro)
-			,json_object('dtUltImport', DATE_FORMAT(dtUltImport, '%d/%m/%Y'))
+			 json_object('vlMedioMensal', json_object('amount',FormatCurrancyBR(vlMedioMensal)))
+			,json_object('qtTotalRegistro', json_object('amount',CAST(qtTotalRegistro as CHAR)))
+			,json_object('dtUltImport', json_object('amount',DATE_FORMAT(dtUltImport, '%d/%m/%Y')))
 		) as stats
 	FROM (SELECT avg(vlValor) vlMedioMensal, count(*) qtTotalRegistro, ca.dtUltImport FROM co_faturamento, (SELECT MAX(dtImport) dtUltImport FROM co_carga ca WHERE ca.cdTipo = 'F') ca) as fa
 ) AS T1 )  AS T2;

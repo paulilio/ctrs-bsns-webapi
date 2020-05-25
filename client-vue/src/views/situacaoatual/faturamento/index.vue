@@ -18,43 +18,28 @@
     <div :class="$style.wrapper" style="padding-top: 20px; border-top: 1px solid #e4e9f0">
       <div :class="$style.searchHeader">
         <div class="row">
-          <div class="col-xl-7">
+          <div class="col-xl-2">
+            <a-month-picker placeholder="Mês" @change="onChangeMonth" size="large" :disabled-date="disabledDate" :defaultValue="moment()" :format="MM-YYYY">
+                  <template slot="renderExtraFooter">
+                  Dados a partir de {{moment(String(this.dateLimits[0]["min"])).format('DD/MM/YYYY')}}
+                  </template>
+                </a-month-picker>
+          </div>
+          <div class="col-xl-10 text-right">
             <div v-for="(f_content, f_name) in filtros" :key="f_name" style="display: inline-block;">
-              <a-select  style="width: 180px; margin-right:12px;" v-for="(i_content, i_name) in f_content" :placeholder="dict.columnToTitle[i_name]" :key="i_name" v-on:change="changeItem($event, i_name)">
+
+              <a-select size="large" style="width: 180px; margin-right:12px;" v-for="(i_content, i_name) in f_content" :placeholder="filtroDicionario[i_name]" :key="i_name" v-on:change="changeItem($event, i_name)">
                 <a-select-option v-for="item in i_content" :key="item.id">
                   {{ item.value }}
                 </a-select-option>
               </a-select>
             </div>
           </div>
-
-          <div class="col-xl-5" style="text-align:right">
-            <a-range-picker
-              :placeholder="['Início', 'Fim']"
-              :format="dateFormat"
-              :disabled-date="disabledDate"
-            >
-            </a-range-picker>
-
-            <a href="javascript: void(0)" :class="[$style.headerLink, 'ml-4']">
-              <i class="icmn icmn-arrow-right2" />
-            </a>
-          </div>
         </div>
-
-        <div class="row">
-          <div class="col-xl-5" style="text-align:right" v-if="!loading">
-                <a-month-picker placeholder="Select month" @change="onChangeMonth" size="large" >
-                  <template slot="renderExtraFooter">
-                  Dados a partir de {{moment(String(this.dateLimits[0]["min"])).format('DD/MM/YYYY')}}
-                  </template>
-                </a-month-picker>
-          </div>
-        </div>
-
 
       </div>
     </div>
+
 
     <!--
     <div class="utils__title mb-3">
@@ -205,7 +190,6 @@ export default {
     return {
       chartCardData: data.chartCardData,
       statsConfig: data.statsConfig,
-      dateFormat: "DD/MM/YYYY",
       dateLimits: [{min:null, max:null}],
       myArray: [],
       filtros: null,
@@ -214,12 +198,7 @@ export default {
       zoom: new Vue(),
       handler: new Vue(),
       filtrosRequest: null,
-      dict: {
-        'columnToTitle': {
-          'dsUnidadeNegocio' : 'Unidade de Negócio',
-          'dsCentroReceita' : 'Centro de Receitas',
-        }
-      },
+      filtroDicionario: data.filtroDicionario[0],
       columns: [
         { title: "#", dataIndex: "idFaturamento", sorter: true},
         { title: "Data Lançamento", dataIndex: "dtDataEmissao", sorter: true },
@@ -376,23 +355,13 @@ export default {
     onChangeMonth(date, dateString) {
       console.log(date, dateString);
     },
-    msgDateLimits() {
-        let start = this.dateLimits[0]["min"];
-        let end = this.dateLimits[0]["max"];
-        return start;
-    },
     disabledDate(current) {
         let start = this.dateLimits[0]["min"];
         let end = this.dateLimits[0]["max"];
-        if (current < moment(start)){
-            return true;
-        }
-        else if (current > moment(end)){
-            return true;
-        }
-        else {
-            return false;
-        }
+
+        const weekStart = moment(this.dateLimits[0]["min"]).startOf('month');
+        const weekEnd = moment(this.dateLimits[0]["max"]).endOf('month');
+        return !(weekStart.isSameOrBefore(current) && weekEnd.isAfter(current));
     },
     changeItem: function changeItem(pValue, pField) {
 
