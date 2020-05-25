@@ -1,0 +1,10 @@
+DELIMITER $$
+DROP FUNCTION IF EXISTS `FormatCurrancyBr`$$
+CREATE FUNCTION `FormatCurrancyBr`(p_valor DECIMAL(20,2)) 
+RETURNS VARCHAR(50)
+NO SQL
+BEGIN
+	RETURN CONCAT('R$ ', REPLACE(REPLACE(REPLACE(FORMAT(p_valor, 2),'.',';'),',','.'),';',','));
+END$$
+
+DELIMITER ;

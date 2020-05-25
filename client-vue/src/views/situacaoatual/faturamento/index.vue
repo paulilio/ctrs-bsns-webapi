@@ -1,24 +1,26 @@
 <template>
   <div>
-
+    <!-- Estatísticas -->
     <div class="utils__title mb-3">
       <strong class="text-uppercase font-size-16">ÚLTIMAS ESTATÍSTICAS</strong>
     </div>
     <div class="row">
-      <div class="col-xl-4" v-for="(chartCard, index) in chartCardData" :key="index">
-        <cui-chart-card
-          :title="chartCard.title"
-          :amount="chartCard.amount"
-          :chartData="chartCard.chartData"
+      <div class="col-xl-4" v-for="(st, index) in stats" :key="index">
+        <my-cui-info-card
+          :icon="st[Object.keys(st)[0]].icon"
+          :type="st[Object.keys(st)[0]].type"
+          :title="st[Object.keys(st)[0]].title"
+          :amount="st[Object.keys(st)[0]].amount"
         />
       </div>
     </div>
-    <div :class="$style.wrapper">
+
+    <div :class="$style.wrapper" style="padding-top: 20px; border-top: 1px solid #e4e9f0">
       <div :class="$style.searchHeader">
         <div class="row">
           <div class="col-xl-7">
             <div v-for="(f_content, f_name) in filtros" :key="f_name" style="display: inline-block;">
-              <a-select  style="width: 180px; margin-right:12px;" v-for="(i_content, i_name) in f_content" :placeholder="i_name" :key="i_name" v-on:change="changeItem($event, i_name)">
+              <a-select  style="width: 180px; margin-right:12px;" v-for="(i_content, i_name) in f_content" :placeholder="dict.columnToTitle[i_name]" :key="i_name" v-on:change="changeItem($event, i_name)">
                 <a-select-option v-for="item in i_content" :key="item.id">
                   {{ item.value }}
                 </a-select-option>
@@ -39,6 +41,18 @@
             </a>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col-xl-5" style="text-align:right" v-if="!loading">
+                <a-month-picker placeholder="Select month" @change="onChangeMonth" size="large" >
+                  <template slot="renderExtraFooter">
+                  Dados a partir de {{moment(String(this.dateLimits[0]["min"])).format('DD/MM/YYYY')}}
+                  </template>
+                </a-month-picker>
+          </div>
+        </div>
+
+
       </div>
     </div>
 
@@ -136,7 +150,8 @@
                 <strong>Faturamento</strong>
               </h5>
               <div class="mb-5">
-                <vue-c3 :handler="zoom" class="height-300"></vue-c3>
+                <!--<vue-c3 :handler="zoom" class="height-300"></vue-c3>-->
+                <vue-c3 :handler="handler" class="height-300"></vue-c3>
               </div>
             </div>
         </div>
@@ -171,30 +186,40 @@
 </template>
 
 <script>
-import { orderBy, filter, map, forEach, set, findIndex, replace, get, mapValues  } from "lodash";
+import { orderBy, filter, map, forEach, set, findIndex, replace, get, mapValues,merge  } from "lodash";
 import axios from "axios";
 import data from "./data.json";
 import moment from "moment";
-import CuiChartCard from "@/components/CleanUIComponents/ChartCard";
+import MyCuiInfoCard from "@/components/MyComponents/InfoCard";
 import Vue from 'vue'
 import VueC3 from 'vue-c3';
 import 'c3/c3.min.css'
 
+
 export default {
   components: {
-    CuiChartCard,
-        VueC3,
+    MyCuiInfoCard,
+    VueC3,
   },
   data() {
     return {
       chartCardData: data.chartCardData,
+      statsConfig: data.statsConfig,
       dateFormat: "DD/MM/YYYY",
-      dateLimits: null,
+      dateLimits: [{min:null, max:null}],
       myArray: [],
       filtros: null,
+      stats: null,
       pie: new Vue(),
       zoom: new Vue(),
+      handler: new Vue(),
       filtrosRequest: null,
+      dict: {
+        'columnToTitle': {
+          'dsUnidadeNegocio' : 'Unidade de Negócio',
+          'dsCentroReceita' : 'Centro de Receitas',
+        }
+      },
       columns: [
         { title: "#", dataIndex: "idFaturamento", sorter: true},
         { title: "Data Lançamento", dataIndex: "dtDataEmissao", sorter: true },
@@ -202,14 +227,14 @@ export default {
         { title: "Data do Recebimento", dataIndex: "dtDataRecebimento", sorter: true },
         { title: "Forma de Recebimento", dataIndex: "dsFormaRecebimento", sorter: true },
         { title: "Valor", dataIndex: "vlValor", sorter: true },
-        { title: "Unidade de Negócios", dataIndex: "dsUnidadeNegocio", sorter: true, filters: [
-      { text: 'Male', value: 'male' },
-      { text: 'Female', value: 'female' }]},
+        { title: "Unidade de Negócios", dataIndex: "dsUnidadeNegocio", sorter: true},
         { title: "Centro de Receitas", dataIndex: "dsCentroReceita", sorter: true }
+        //#### Teste
+        //{ title: "Centro de Receitas", dataIndex: "dsCentroReceita", sorter: true, filters: [{ text: 'Male', value: 'male' },{ text: 'Female', value: 'female' }]}
       ],
       datasource: null,
       pagination: {},
-      loading: false,
+      loading: true,
       colors: {
         primary: '#01a8fe',
         def: '#acb7bf',
@@ -220,6 +245,7 @@ export default {
   },
   created() {
     moment.locale("pt-br");
+
   },
   computed: {
     axiosParams() {
@@ -233,7 +259,7 @@ export default {
         data: {
           x: 'x',
           columns: [
-            ['x', '1', '2', '3', '4', '5', '9'],
+            ['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
 //            ['x', '20130101', '20130102', '20130103', '20130104', '20130105', '20130106'],
             ['data1', 30, 200, 100, 400, 150, 250],
             ['data2', 130, 340, 200, 500, 250, 350]
@@ -269,8 +295,33 @@ export default {
   },
   mounted() {
     this.fetch();
-    this.zoom.$emit('init', this.zoomOptions)
+    this.zoom.$emit('init', this.zoomOptions);
     this.pie.$emit('init', this.pieOptions);
+
+      // to init the graph call:
+      const options = {
+        data: {
+          x: 'times',
+          xFormat: '%Y-%m-%d', // how the date is parsed
+          columns: [
+            ['times','2015-09-17','2015-10-17','2015-11-17', '2015-12-17', '2016-01-17'],
+            ['data','1234','1235','132346','13458']
+          ],
+          colors: {
+                Sample: this.colors.primary,
+              },
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    format: '%d' // how the date is displayed
+                }
+            }
+        }
+      };
+      this.handler.$emit('init', options);
+
     axios
       .get("https://localhost:44396/api/SituacaoAtual/GetFiltro")
       .then(res => {
@@ -285,6 +336,14 @@ export default {
           return mapValues(obj, function(nm){return ''})
         });
         //console.log(JSON.stringify(this.filtrosRequest));
+
+        //Dados Estatística: Mescla Json com dados e Json com configuração
+        //console.log(JSON.stringify(_.merge(res.data.stats, this.statsConfig)[0]));
+        this.stats = _.merge(res.data.stats, this.statsConfig);
+        console.log(
+          //Object.keys(this.stats).map(function(key) { return [Number(key), this.stats[key]]})
+          this.stats
+        )
 
         /*
         this.filtrosRequest = map(this.filtros, function(obj,index){
@@ -314,6 +373,14 @@ export default {
   },
   methods: {
     moment,
+    onChangeMonth(date, dateString) {
+      console.log(date, dateString);
+    },
+    msgDateLimits() {
+        let start = this.dateLimits[0]["min"];
+        let end = this.dateLimits[0]["max"];
+        return start;
+    },
     disabledDate(current) {
         let start = this.dateLimits[0]["min"];
         let end = this.dateLimits[0]["max"];
