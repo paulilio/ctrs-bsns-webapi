@@ -25,6 +25,15 @@ export const store = new Vuex.Store({
         { label: "Caixas/Bancos", key: "descBanco" },
         { label: "Código Interno", key: "descCodigoInterno" },
       ],
+    tiposImport: [
+      {
+        "F": "Faturamento",
+        "R": "Contas a Receber",
+        "P": "Contas a Pagar",
+        "I": "Inadimplência",
+        "B": "Caixas e Bancos"
+      }
+    ]
   },
   mutations: {
     SET_UPLOADING(state, value) {

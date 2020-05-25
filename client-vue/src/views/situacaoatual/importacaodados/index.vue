@@ -3,6 +3,7 @@
     <div class="utils__title mb-3">
       <strong class="text-uppercase font-size-16">Importação de Dados</strong>
     </div>
+
     <div class="row">
       <div class="col-lg-12">
         <div class="card">
@@ -16,10 +17,11 @@
               />
             </a-steps>
             <div class="steps-content">
-              <div class="steps-content">
+              <div class="steps-content" style="margin-bottom:20px;">
                 <div :is="steps[current].component" :ref="steps[current].component"></div>
               </div>
             </div>
+
             <div class="steps-action">
               <a-button
                 v-if="current < steps.length - 1"
@@ -37,6 +39,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>

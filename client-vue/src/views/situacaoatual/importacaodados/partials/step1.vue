@@ -6,6 +6,22 @@
     <p class="ant-upload-hint"></p>
     <slot name="error" v-if="showErrorMessage"><h2><div class="invalid-feedback d-block">Tipo de arquivo inválido!</div></h2></slot>
     </a-upload-dragger>
+
+
+  <div class="row">
+    <div class="col-lg-2 text-right" style="margin-top:20px">
+    <h4>Tipo de Importação:</h4>
+    </div>
+    <div class="col-lg-10 text-left">
+      <a-select size="large" style="width: 180px;margin-top:10px" v-model="tipoImportSelected">
+        <a-select-option v-for="(item, key) in tiposImport[0]" :key="key">
+          {{ item }}
+        </a-select-option>
+      </a-select>
+    </div>
+</div>
+
+
   </div>
 </template>
 
@@ -38,8 +54,13 @@ export default {
       fileSelected: false,
       isValidFileMimeType: false,
       file: null,
-      csv: null
+      csv: null,
+      tipoImportSelected: null,
+      tiposImport: null,
     };
+  },
+  mounted() {
+    this.tiposImport = store.state.tiposImport;
   },
   methods: {
     handleRemove(file) {
@@ -68,9 +89,11 @@ export default {
       //const _this = this;
       this.readFile(output => {
 //Doc Papa-parse https://www.papaparse.com/demo
-        this.csv = get(Papa.parse(output, { skipEmptyLines: true }), "data")
-        store.dispatch("setCsv", this.csv); 
-        store.dispatch("setFirstRow", get(this, "csv.0")); 
+        this.csv = get(Papa.parse(output, { skipEmptyLines: 'greedy' }), "data")
+        store.dispatch("setCsv", this.csv);
+        store.dispatch("setFirstRow", get(this, "csv.0"));
+        //store.dispatch("setTipoImport", tipoImport);
+        consel.log(this.tipoImportSelected);
       });
       this.$message.success('upload successfully.');
     },

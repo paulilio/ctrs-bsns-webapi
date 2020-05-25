@@ -1,19 +1,16 @@
 <template>
   <div>
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Field</th>
-          <th>CSV Column</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(field, key) in s_fieldsToMap" :key="key">
-          <td>{{ field.label }}</td>
-          <td>
-            <select 
+
+        <span v-for="fieldsT in groupedfieldsToMap"  class="row">
+
+        <div v-for="(field, key) in fieldsT" :key="key" class="col-lg-4">
+
+<div class="row">
+  <div class="col-lg-6  text-right " style="padding-top:5px;font-weight:bold;font-weight:bold;font-size: 16px;">{{ field.label }}:</div>
+  <div class="col-lg-6 text-left" style="padding-top:5px;padding-bottom:5px;">
+
+        <select size="large" style="width: 200px; height: 30px;"
               :ref="`csv_uploader_map_${key}`"
-              class="form-control"
               :name="`csv_uploader_map_${key}`"
               v-model="map[field.key]"
             >
@@ -25,10 +22,15 @@
               >
               <option value="99" key="99">Não se aplica</option>
             </select>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  </div>
+</div>
+
+
+
+
+        </div>
+        </span>
+
   </div>
 </template>
 
@@ -47,18 +49,26 @@ export default {
   mounted() {
 
     this.fieldsToMap = store.state.fieldsToMap;
+
+    //let g = map(this.fieldsToMap, function(obj,index){      });
+
     for (var m in this.fieldsToMap) {
       //Prenchimento automatico desativado, para forçar usuário a selecionar.
       //this.map[this.fieldsToMap[m].key] = m;
       this.map[this.fieldsToMap[m].key] = null;
+
+      //console.log(m);
     }
+
+    //this.fieldsToMap
+
 
   },
   methods: {
     completeStep() {
       //valida
       //salva no store
-      store.dispatch("setMap", this.map); 
+      store.dispatch("setMap", this.map);
       return true;
     },
     info() {
@@ -75,6 +85,11 @@ export default {
     }
   },
   computed: {
+    groupedfieldsToMap() {
+      return _.chunk(this.fieldsToMap, 3)
+      // returns a nested array:
+      // [[article, article, article], [article, article, article], ...]
+    },
     s_firstRow() {
       return store.state.firstRow;
     },

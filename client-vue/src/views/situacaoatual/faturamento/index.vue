@@ -27,7 +27,6 @@
           </div>
           <div class="col-xl-10 text-right">
             <div v-for="(f_content, f_name) in filtros" :key="f_name" style="display: inline-block;">
-
               <a-select size="large" style="width: 180px; margin-right:12px;" v-for="(i_content, i_name) in f_content" :placeholder="filtroDicionario[i_name]" :key="i_name" v-on:change="changeItem($event, i_name)">
                 <a-select-option v-for="item in i_content" :key="item.id">
                   {{ item.value }}

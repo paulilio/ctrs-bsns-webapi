@@ -100,7 +100,7 @@ export default {
       if (f_obj.key == "descCodigoInterno") return;
 
       if (re_0A99.test(get(this.map, f_obj.key))) {
-        //Mapeado na fase anterior. null ou acima de 98 é não mapeado.
+       //Mapeado na fase anterior. null ou acima de 98 é não mapeado.
         this.columns.push({
           title: f_obj.label,
           dataIndex: f_obj.key,
@@ -162,6 +162,7 @@ export default {
       console.log("csv");
       console.log(this.form.csv);
 
+/*
       axios
         .post(this.url, this.form)
         .then(response => {
@@ -178,6 +179,7 @@ export default {
         .finally(() => (this.loading = false));
       console.log("finally");
       return true;
+*/
     },
     info() {
       this.$message.info("This is a normal message");
