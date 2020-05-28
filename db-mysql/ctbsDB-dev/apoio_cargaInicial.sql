@@ -1,5 +1,5 @@
-//USUARIO
-INSERT INTO `ctbsdb_dev`.`cb_usuario`
+-- USUARIO
+INSERT INTO `ctbsdb_dev`.`co_usuario`
 (
 `dsLogin`,
 `dsSenha`,
@@ -9,15 +9,15 @@ INSERT INTO `ctbsdb_dev`.`cb_usuario`
 `chAdmin`)
 VALUES
 (
-'skywalker',
-'semsenha',
+'sysadmin',
+'#12345',
 current_timestamp() ,
 'paulilio.ferreira@gmail.com',
 'A',
 'S');
 
-//EMPRESA
-INSERT INTO `ctbsdb_dev`.`cb_empresa`
+-- EMPRESA
+INSERT INTO `ctbsdb_dev`.`co_empresa`
 (
 `dsCpfCnpj`,
 `dsNomeOficial`,

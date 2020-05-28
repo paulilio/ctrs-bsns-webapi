@@ -19,9 +19,9 @@ INTO select_result FROM (
 SELECT GROUP_CONCAT(content) content, MAX(limites) limites, MAX(stats) stats FROM (
   SELECT CASE WHEN dsUnidadeNegocio IS NULL THEN NULL ELSE json_object( 'dsUnidadeNegocio' ,JSON_ARRAYAGG(json_object('id', dsUnidadeNegocio, 'value', dsUnidadeNegocio))) END AS content, null as limites, null as stats FROM (SELECT DISTINCT dsUnidadeNegocio FROM co_faturamento ORDER BY dsUnidadeNegocio ASC ) co_fa_un
   UNION ALL
-  SELECT CASE WHEN dsCentroReceita IS NULL THEN NULL ELSE json_object( 'dsCentroReceita' ,JSON_ARRAYAGG(json_object('id', dsCentroReceita, 'value', dsCentroReceita))) END AS content, null as limites, null as stats FROM (SELECT DISTINCT dsCentroReceita FROM co_faturamento ORDER BY dsCentroReceita ASC ) co_fa_ce
+  SELECT CASE WHEN dsCentroCusto IS NULL THEN NULL ELSE json_object( 'dsCentroCusto' ,JSON_ARRAYAGG(json_object('id', dsCentroCusto, 'value', dsCentroCusto))) END AS content, null as limites, null as stats FROM (SELECT DISTINCT dsCentroCusto FROM co_faturamento ORDER BY dsCentroCusto ASC ) co_fa_ce
   UNION ALL
-  SELECT CASE WHEN dsFormaRecebimento IS NULL THEN NULL ELSE json_object( 'dsFormaRecebimento' ,JSON_ARRAYAGG(json_object('id', dsFormaRecebimento, 'value', dsFormaRecebimento))) END AS content, null as limites, null as stats FROM (SELECT DISTINCT dsFormaRecebimento FROM co_faturamento ORDER BY dsFormaRecebimento ASC ) co_fa_ce
+  SELECT CASE WHEN dsFormaPagamento IS NULL THEN NULL ELSE json_object( 'dsFormaPagamento' ,JSON_ARRAYAGG(json_object('id', dsFormaPagamento, 'value', dsFormaPagamento))) END AS content, null as limites, null as stats FROM (SELECT DISTINCT dsFormaPagamento FROM co_faturamento ORDER BY dsFormaPagamento ASC ) co_fa_ce
   UNION ALL
   SELECT null as content, json_object('max', DATE_FORMAT(dtMax, '%Y-%m-%d'), 'min', DATE_FORMAT(dtMin, '%Y-%m-%d')) limites, null as stats FROM (SELECT DISTINCT MAX(fa.dtDataEmissao) dtMax, MIN(fa.dtDataEmissao) dtMin FROM co_faturamento fa ) as fa
   UNION ALL  
@@ -39,7 +39,7 @@ SELECT CONCAT('{"filtros":', GROUP_CONCAT(content), '}') INTO select_result FROM
 (
     SELECT CASE WHEN dsUnidadeNegocio IS NULL THEN NULL ELSE json_object( 'Unidade de Negócio',JSON_ARRAYAGG(json_object('id', dsUnidadeNegocio, 'value', dsUnidadeNegocio))) END AS content FROM (SELECT DISTINCT dsUnidadeNegocio FROM co_faturamento ORDER BY dsUnidadeNegocio ASC ) co_fa_un
 	UNION ALL
-	SELECT CASE WHEN dsCentroReceita IS NULL THEN NULL ELSE json_object( 'Centro de Receita',JSON_ARRAYAGG(json_object('id', dsCentroReceita, 'value', dsCentroReceita))) END AS content FROM (SELECT DISTINCT dsCentroReceita FROM co_faturamento ORDER BY dsCentroReceita ASC ) co_fa_ce
+	SELECT CASE WHEN dsCentroCusto IS NULL THEN NULL ELSE json_object( 'Centro de Receita',JSON_ARRAYAGG(json_object('id', dsCentroCusto, 'value', dsCentroCusto))) END AS content FROM (SELECT DISTINCT dsCentroCusto FROM co_faturamento ORDER BY dsCentroCusto ASC ) co_fa_ce
 )  AS AUX WHERE content is not null;
 */
 

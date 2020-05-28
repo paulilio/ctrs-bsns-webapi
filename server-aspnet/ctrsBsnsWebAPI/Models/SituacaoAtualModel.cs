@@ -30,10 +30,10 @@ namespace CtrsBsnsWebAPI.Model
         [Column("dtDataVencimento")]
         public DateTime dtDataVencimento { get; set; }
 
-        [Column("dtDataRecebimento")]
-        public DateTime dtDataRecebimento { get; set; }
+        [Column("dtDataPagamento")]
+        public DateTime dtDataPagamento { get; set; }
 
-        [Column("dsFormaRecebimento")]
+        [Column("dsFormaPagamento")]
         public string dsFormaRecebimento { get; set; }
 
         [Column("vlValor")]
@@ -48,7 +48,7 @@ namespace CtrsBsnsWebAPI.Model
         [Column("dsUnidadeNegocio")]
         public string dsUnidadeNegocio { get; set; }
 
-        [Column("dsCentroReceita")]
+        [Column("dsCentroCusto")]
         public string dsCentroReceita { get; set; }
 
         [Column("dsBanco")]
@@ -82,11 +82,11 @@ namespace CtrsBsnsWebAPI.Model
         [Column("dtDataVencimento")]
         public DateTime dtDataVencimento { get; set; }
 
-        [Column("dtDataRecebimento")]
-        public DateTime dtDataRecebimento { get; set; }
+        [Column("dtDataPagamento")]
+        public DateTime dtDataPagamento { get; set; }
 
-        [Column("dsFormaRecebimento")]
-        public string dsFormaRecebimento { get; set; }
+        [Column("dsFormaPagamento")]
+        public string dsFormaPagamento { get; set; }
 
         [Column("vlValor")]
         public decimal vlValor { get; set; }
@@ -100,8 +100,8 @@ namespace CtrsBsnsWebAPI.Model
         [Column("dsUnidadeNegocio")]
         public string dsUnidadeNegocio { get; set; }
 
-        [Column("dsCentroReceita")]
-        public string dsCentroReceita { get; set; }
+        [Column("dsCentroCusto")]
+        public string dsCentroCusto { get; set; }
 
     }
 
@@ -130,11 +130,11 @@ namespace CtrsBsnsWebAPI.Model
         [Column("dtDataVencimento")]
         public DateTime dtDataVencimento { get; set; }
 
-        [Column("dtDataRecebimento")]
-        public DateTime dtDataRecebimento { get; set; }
+        [Column("dtDataPagamento")]
+        public DateTime dtDataPagamento { get; set; }
 
-        [Column("dsFormaRecebimento")]
-        public string dsFormaRecebimento { get; set; }
+        [Column("dsFormaPagamento")]
+        public string dsFormaPagamento { get; set; }
 
         [Column("vlValor")]
         public decimal vlValor { get; set; }
@@ -148,8 +148,8 @@ namespace CtrsBsnsWebAPI.Model
         [Column("dsUnidadeNegocio")]
         public string dsUnidadeNegocio { get; set; }
 
-        [Column("dsCentroReceita")]
-        public string dsCentroReceita { get; set; }
+        [Column("dsCentroCusto")]
+        public string dsCentroCusto { get; set; }
 
     }
 
@@ -178,11 +178,11 @@ namespace CtrsBsnsWebAPI.Model
         [Column("dtDataVencimento")]
         public DateTime dtDataVencimento { get; set; }
 
-        [Column("dtDataRecebimento")]
-        public DateTime dtDataRecebimento { get; set; }
+        [Column("dtDataPagamento")]
+        public DateTime dtDataPagamento { get; set; }
 
-        [Column("dsFormaRecebimento")]
-        public string dsFormaRecebimento { get; set; }
+        [Column("dsFormaPagamento")]
+        public string dsFormaPagamento { get; set; }
 
         [Column("vlValor")]
         public decimal vlValor { get; set; }
@@ -196,8 +196,8 @@ namespace CtrsBsnsWebAPI.Model
         [Column("dsUnidadeNegocio")]
         public string dsUnidadeNegocio { get; set; }
 
-        [Column("dsCentroReceita")]
-        public string dsCentroReceita { get; set; }
+        [Column("dsCentroCusto")]
+        public string dsCentroCusto { get; set; }
 
     }
 
@@ -226,11 +226,11 @@ namespace CtrsBsnsWebAPI.Model
         [Column("dtDataVencimento")]
         public DateTime dtDataVencimento { get; set; }
 
-        [Column("dtDataRecebimento")]
-        public DateTime dtDataRecebimento { get; set; }
+        [Column("dtDataPagamento")]
+        public DateTime dtDataPagamento { get; set; }
 
-        [Column("dsFormaRecebimento")]
-        public string dsFormaRecebimento { get; set; }
+        [Column("dsFormaPagamento")]
+        public string dsFormaPagamento { get; set; }
 
         [Column("vlValor")]
         public decimal vlValor { get; set; }
@@ -244,8 +244,8 @@ namespace CtrsBsnsWebAPI.Model
         [Column("dsUnidadeNegocio")]
         public string dsUnidadeNegocio { get; set; }
 
-        [Column("dsCentroReceita")]
-        public string dsCentroReceita { get; set; }
+        [Column("dsCentroCusto")]
+        public string dsCentroCusto { get; set; }
 
         [Column("dsBanco")]
         public string dsBanco { get; set; }

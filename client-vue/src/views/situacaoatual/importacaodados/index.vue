@@ -87,11 +87,15 @@ export default {
     },
     done() {
       var comp = this.steps[this.current].component;
-      if (this.$refs[comp].completeStep()) {
-        console.log('teste10');
-        this.current = 0;
-        store.state.reset()
-      }
+       this.$refs[comp].completeStep()
+       .then(result => {
+          if (result) {
+            //Sucesso
+            this.current = 0;
+            store.dispatch("reset");
+            this.steps[0].component;
+          }
+       });
     },
   },
   computed: {
@@ -99,7 +103,7 @@ export default {
       return !this.isValidFileMimeType;
     },
     s_isValidFile() {
-      return store.state.isValidFile;
+      return (store.state.isValidFile && (store.state.tipoImportSelected != null || store.state.tipoImportSelected != ''));
     },
     s_csv() {
       return store.state.csv;

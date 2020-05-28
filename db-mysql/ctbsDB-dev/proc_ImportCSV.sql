@@ -1,5 +1,4 @@
 USE `ctbsDB_dev`;
-
 DROP procedure IF EXISTS `ctbsDB_dev`.`proc_ImportCSV`;
 
 DELIMITER $$
@@ -9,13 +8,14 @@ CREATE PROCEDURE `proc_ImportCSV`(
   IN p_dsNomeArquivo VARCHAR(50), 
   IN p_IdEmpresa INT,
   IN p_idUsuario INT,
-  IN p_cdTipo VARCHAR(1),
+  IN p_cdTipoImp VARCHAR(1),
   OUT result longtext)
 BEGIN
 
 DECLARE v_dtImport TIMESTAMP;
 DECLARE v_idcarga INT;
 DECLARE v_TipoTabela VARCHAR(50);
+DECLARE v_UsaCampoBanco INT DEFAULT 0;
 
 DECLARE nRowsAffected INT; 
 -- DECLARE `_rollback` BOOL DEFAULT 0;
@@ -51,7 +51,7 @@ insert into
     `ctbsdb_dev`.`co_import_csv`(
     idUsuario
    ,idEmpresa
-   ,cdTipo         
+   ,cdTipoImport     
    ,dsNomeArquivo     
    ,dtImport
    ,dsCpfCnpjCliente  
@@ -59,19 +59,19 @@ insert into
    ,dsCodigoInterno   
    ,dsDataEmissao     
    ,dsDataVencimento  
-   ,dsDataRecebimento 
-   ,dsFormaRecebimento
+   ,dsDataPagamento 
+   ,dsFormaPagamento
    ,dsValor           
    ,dsNatureza        
    ,dsContaContabil   
    ,dsUnidadeNegocio  
-   ,dsCentroReceita   
+   ,dsCentroCusto   
    ,dsBanco           
     )
 SELECT
     p_idUsuario      
    ,p_idEmpresa
-   ,p_cdTipo        
+   ,p_cdTipoImp      
    ,p_dsNomeArquivo     
    ,v_dtImport   
    ,tt.descCpfCnpjCliente  
@@ -79,13 +79,13 @@ SELECT
    ,tt.descCodigoInterno   
    ,tt.descDataEmissao     
    ,tt.descDataVencimento  
-   ,tt.descDataRecebimento 
-   ,tt.descFormaRecebimento
+   ,tt.descDataPagamento 
+   ,tt.descFormaPagamento
    ,tt.descValor           
    ,tt.descNatureza        
    ,tt.descContaContabil   
    ,tt.descUnidadeNegocio  
-   ,tt.descCentroReceita   
+   ,tt.descCentroCusto   
    ,tt.descBanco   
 FROM
     JSON_TABLE(
@@ -96,13 +96,13 @@ FROM
             descCodigoInterno VARCHAR(20) PATH '$."descCodigoInterno"' NULL ON EMPTY,
             descDataEmissao VARCHAR(20) PATH '$."descDataEmissao"' NULL ON EMPTY,
             descDataVencimento VARCHAR(20) PATH '$."descDataVencimento"' NULL ON EMPTY,
-            descDataRecebimento VARCHAR(20) PATH '$."descDataRecebimento"' NULL ON EMPTY,
-            descFormaRecebimento VARCHAR(50) PATH '$."descFormaRecebimento"' NULL ON EMPTY,
+            descDataPagamento VARCHAR(20) PATH '$."descDataPagamento"' NULL ON EMPTY,
+            descFormaPagamento VARCHAR(50) PATH '$."descFormaPagamento"' NULL ON EMPTY,
             descValor VARCHAR(20) PATH '$."descValor"' NULL ON EMPTY,
             descNatureza VARCHAR(50) PATH '$."descNatureza"' NULL ON EMPTY,
             descContaContabil VARCHAR(50) PATH '$."descContaContabil"' NULL ON EMPTY,
             descUnidadeNegocio VARCHAR(50) PATH '$."descUnidadeNegocio"' NULL ON EMPTY,
-            descCentroReceita VARCHAR(50) PATH '$."descCentroReceita"' NULL ON EMPTY,
+            descCentroCusto VARCHAR(50) PATH '$."descCentroCusto"' NULL ON EMPTY,
             descBanco VARCHAR(50) PATH '$."descBanco"' NULL ON EMPTY
         )
     ) AS tt;
@@ -114,14 +114,14 @@ FROM
     (
      idUsuario
     ,idEmpresa
-    ,cdTipo
+    ,cdTipoImport
     ,dsNomeArquivo
     ,dtImport
     )
     SELECT
      p_idUsuario
     ,p_idEmpresa       
-    ,p_cdTipo  
+    ,p_cdTipoImp  
     ,p_dsNomeArquivo     
     ,v_dtImport
     FROM DUAL;
@@ -130,11 +130,18 @@ FROM
 /*INSERIR NAS TABELAS DEFINITIVAS? OU SOMENTE AO FINALIZAR O PASSO?!*/
 
 SELECT LAST_INSERT_ID() INTO v_idcarga FROM ctbsdb_dev.co_carga;
-CASE p_cdTipo
+CASE p_cdTipoImp
     WHEN  'F' THEN
         SET v_TipoTabela =  'ctbsdb_dev.co_faturamento';
+    WHEN  'R' THEN
+        SET v_TipoTabela =  'ctbsdb_dev.co_conta_receber';
+    WHEN  'P' THEN
+        SET v_TipoTabela =  'ctbsdb_dev.co_conta_pagar';
+    WHEN  'I' THEN
+        SET v_TipoTabela =  'ctbsdb_dev.co_inadimplentes';
     WHEN 'B' THEN
         SET v_TipoTabela = 'ctbsdb_dev.co_banco';
+        SET v_UsaCampoBanco = 1;
     #ELSE
         #SET pShipping = '5-day Shipping';
 END CASE;
@@ -148,13 +155,14 @@ SET @SQLText = CONCAT(
 ,',dsCodigoInterno'
 ,',dtDataEmissao'
 ,',dtDataVencimento'
-,',dtDataRecebimento'
-,',dsFormaRecebimento'
+,',dtDataPagamento'
+,',dsFormaPagamento'
 ,',vlValor'
 ,',dsNatureza'
 ,',dsContaContabil'
 ,',dsUnidadeNegocio'
-,',dsCentroReceita'
+,',dsCentroCusto'
+,CASE WHEN v_UsaCampoBanco = 1 THEN ',dsBanco' ELSE '' END
 ,')'
 ,' SELECT '
 ,v_idCarga
@@ -163,13 +171,14 @@ SET @SQLText = CONCAT(
 ,',dsCodigoInterno '   
 ,',STR_TO_DATE(dsDataEmissao, ''%d/%m/%Y'') dtDataEmissao'
 ,',STR_TO_DATE(dsDataVencimento, ''%d/%m/%Y'') dtDataVencimento'
-,',STR_TO_DATE(dsDataRecebimento, ''%d/%m/%Y'') dtDataRecebimento'
-,',dsFormaRecebimento ' 
+,',STR_TO_DATE(dsDataPagamento, ''%d/%m/%Y'') dtDataPagamento'
+,',dsFormaPagamento ' 
 ,',ExtractDecimal(dsValor) vlValor'
 ,',dsNatureza '
 ,',dsContaContabil '
 ,',dsUnidadeNegocio ' 
-,',dsCentroReceita '
+,',dsCentroCusto '
+,CASE WHEN v_UsaCampoBanco = 1 THEN ',dsBanco' ELSE '' END
 ,' FROM `ctbsdb_dev`.`co_import_csv` i '
 ,' WHERE '
 ,' i.idUsuario = ', p_idUsuario
@@ -213,7 +222,7 @@ END $$
 DELIMITER ;
 
 /* TEST PROC
-CALL `ctbsdb_dev`.`proc_ImportCSV`('[ { "uid": 0, "descNomeCliente": "Joao", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaRecebimento": "Boleto", "descValor": " R$ 4.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "1" }, { "uid": 1, "descNomeCliente": "Maria", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaRecebimento": "Boleto", "descValor": " R$ 2.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "2" }, { "uid": 2, "descNomeCliente": "Joao", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaRecebimento": "Boleto", "descValor": " R$ 4.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "1" }, { "uid": 3, "descNomeCliente": "Maria", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaRecebimento": "Boleto", "descValor": " R$ 2.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "2" }, { "uid": 4, "descNomeCliente": "Daniel", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaRecebimento": "Cartão Credito", "descValor": " R$ 2.500,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "3" }, { "uid": 5, "descNomeCliente": "Paulilio", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaRecebimento": "Cartão Credito", "descValor": " R$ 3.240,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "4" }, { "uid": 6, "descNomeCliente": "Paulilio", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/6/2020", "descFormaRecebimento": "Cartão Credito", "descValor": " R$ 3.240,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "4" }, { "uid": 7, "descNomeCliente": "Gustavo", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaRecebimento": "Boleto", "descValor": " R$ 1.234,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "5" } ]', 'teste.csv', 1, 1, 'F', @test);
+CALL `ctbsdb_dev`.`proc_ImportCSV`('[ { "uid": 0, "descNomeCliente": "Joao", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 4.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "1" }, { "uid": 1, "descNomeCliente": "Maria", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 2.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "2" }, { "uid": 2, "descNomeCliente": "Joao", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 4.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "1" }, { "uid": 3, "descNomeCliente": "Maria", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 2.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "2" }, { "uid": 4, "descNomeCliente": "Daniel", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaPagamento": "Cartão Credito", "descValor": " R$ 2.500,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "3" }, { "uid": 5, "descNomeCliente": "Paulilio", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaPagamento": "Cartão Credito", "descValor": " R$ 3.240,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "4" }, { "uid": 6, "descNomeCliente": "Paulilio", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/6/2020", "descFormaPagamento": "Cartão Credito", "descValor": " R$ 3.240,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "4" }, { "uid": 7, "descNomeCliente": "Gustavo", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 1.234,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "5" } ]', 'teste.csv', 1, 1, 'F', @test);
 SELECT @test as t;
 */
 

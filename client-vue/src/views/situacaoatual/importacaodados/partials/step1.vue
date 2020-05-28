@@ -13,7 +13,7 @@
     <h4>Tipo de Importação:</h4>
     </div>
     <div class="col-lg-10 text-left">
-      <a-select size="large" style="width: 180px;margin-top:10px" v-model="tipoImportSelected">
+      <a-select size="large" style="width: 180px;margin-top:10px" @change="onChangeSelectImport($event)">
         <a-select-option v-for="(item, key) in tiposImport[0]" :key="key">
           {{ item }}
         </a-select-option>
@@ -55,14 +55,17 @@ export default {
       isValidFileMimeType: false,
       file: null,
       csv: null,
-      tipoImportSelected: null,
-      tiposImport: null,
+      tiposImport: [],
     };
   },
   mounted() {
     this.tiposImport = store.state.tiposImport;
+    store.dispatch("reset");
   },
   methods: {
+    onChangeSelectImport(val){
+      store.dispatch("setTipoImportSelected", val);
+    },
     handleRemove(file) {
       const index = this.fileList.indexOf(file);
       const newFileList = this.fileList.slice();
@@ -88,22 +91,21 @@ export default {
     handleUpload() {
       //const _this = this;
       this.readFile(output => {
-//Doc Papa-parse https://www.papaparse.com/demo
+        //###Doc Papa-parse https://www.papaparse.com/demo
         this.csv = get(Papa.parse(output, { skipEmptyLines: 'greedy' }), "data")
-        store.dispatch("setCsv", this.csv);
         store.dispatch("setFirstRow", get(this, "csv.0"));
-        //store.dispatch("setTipoImport", tipoImport);
-        consel.log(this.tipoImportSelected);
+        this.csv.shift(); //Remove FirstRow
+        store.dispatch("setCsv", this.csv);
       });
-      this.$message.success('upload successfully.');
     },
     readFile(callback) {
       const { fileList } = this;
       let file = fileList[0];
-      console.log('arquivo no readFile'); console.log(file);
+      //console.log('arquivo no readFile'); console.log(file);
       if (file) {
         let reader = new FileReader();
         reader.readAsText(file, "UTF-8");
+        store.dispatch("setFileName", file.name);
         reader.onload = function(evt) {
           callback(evt.target.result);
         };
@@ -112,7 +114,7 @@ export default {
     },
     completeStep() {
       this.handleUpload();
-      this.$message.success("This is a message of success");
+      this.$message.success("Upload de arquivo realizado com sucesso!");
       return true;
     },
     validFileMimeType(info) {

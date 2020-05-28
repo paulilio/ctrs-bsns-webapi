@@ -52,20 +52,22 @@ namespace CtrsBsnsWebAPI.Data
             return new Result() { id = obj.status, resultValue = ((obj.result == null && obj.status != 200) ? "Erro não especificado!" : obj.result) };
         }
 
-        public Result ImportCSV(string json, string dsNomeArquivo, int idUsuario, int idEmpresa, char cdTipo)
-        {
+        public Result ImportCSV(string json, string dsNomeArquivo, int idUsuario, int idEmpresa, string cdTipoImport)
+        { 
             try
             {
                 Result r = _context.Set<Result>().FromSql<Result>(
-                    "call proc_ImportCSV(@p_json, @p_dsNomeArquivo, @p_IdEmpresa, @p_idUsuario, @p_cdTipo, @result); SELECT 0 id, @result resultValue;"
+                    "call proc_ImportCSV(@p_json, @p_dsNomeArquivo, @p_IdEmpresa, @p_idUsuario, @p_cdTipoImp, @result); SELECT 0 id, @result resultValue;"
                     , new MySqlParameter("@p_json", MySqlDbType.LongText) { Value = json, ParameterName = "@p_json" }
                     , new MySqlParameter("@p_dsNomeArquivo", MySqlDbType.String) { Value = dsNomeArquivo, ParameterName = "@p_dsNomeArquivo" }
                     , new MySqlParameter("@p_IdEmpresa", MySqlDbType.Int32) { Value = idEmpresa, ParameterName = "@p_IdEmpresa" }
                     , new MySqlParameter("@p_idUsuario", MySqlDbType.Int32) { Value = idUsuario, ParameterName = "@p_idUsuario" }
-                    , new MySqlParameter("@p_cdTipo", MySqlDbType.String) { Value = cdTipo, ParameterName = "@p_cdTipo" }
+                    , new MySqlParameter("@p_cdTipoImp", MySqlDbType.String) { Value = cdTipoImport, ParameterName = "@p_cdTipoImp" }
                     ).FirstOrDefault();
                 dynamic obj = JsonConvert.DeserializeObject(r.resultValue);
                 return new Result() { id = obj.status, resultValue = ((obj.result == null) ? "Erro não especificado!" : obj.result) };
+
+                //return new Result() { id = 200, resultValue = "Teste!" };
             }
             catch (Exception ex)
             {

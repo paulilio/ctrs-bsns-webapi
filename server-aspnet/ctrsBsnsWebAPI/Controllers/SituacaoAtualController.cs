@@ -99,7 +99,7 @@ namespace CtrsBsnsWebAPI.Controllers
                     , JObject.Parse(jsonResult.GetRawText()).SelectToken("$.dsNomeArquivo").ToString()
                     , Convert.ToInt32(JObject.Parse(jsonResult.GetRawText()).SelectToken("$.idUsuario"))
                     , Convert.ToInt32(JObject.Parse(jsonResult.GetRawText()).SelectToken("$.idEmpresa"))
-                    , Convert.ToChar(JObject.Parse(jsonResult.GetRawText()).SelectToken("$.cdTipo").ToString())
+                    , JObject.Parse(jsonResult.GetRawText()).SelectToken("$.cdTipoImport").ToString()
                     );
 
                 if (_result.id == 200)

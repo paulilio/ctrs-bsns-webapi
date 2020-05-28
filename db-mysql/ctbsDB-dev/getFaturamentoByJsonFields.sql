@@ -27,7 +27,7 @@ end if;
 
 -- if (_dtStart is not null) AND (_dtEnd is not null) then 
 
--- SET @jsonstr:='[{"dsUnidadeNegocio":"Goiânia"},{"dsCentroReceita":""},{"dsFormaRecebimento":""},{"dtDataEmissaoMin":"2020-04-03"},{"dtDataEmissaoMax":"2020-04-14"}]';
+-- SET @jsonstr:='[{"dsUnidadeNegocio":"Goiânia"},{"dsCentroCusto":""},{"dsFormaRecebimento":""},{"dtDataEmissaoMin":"2020-04-03"},{"dtDataEmissaoMax":"2020-04-14"}]';
 WITH ftr AS (SELECT 
   JSON_UNQUOTE(REPLACE(REPLACE(JSON_EXTRACT(jsonParams,'$**.dsUnidadeNegocio'),'[',''),']','')) AS dsUnidadeNegocio
 , JSON_UNQUOTE(REPLACE(REPLACE(JSON_EXTRACT(jsonParams,'$**.dsFormaRecebimento'),'[',''),']','')) AS dsFormaRecebimento
@@ -43,19 +43,19 @@ SELECT JSON_ARRAYAGG(
 	'dsCodigoInterno', CASE WHEN co.dsCodigoInterno IS NULL OR co.dsCodigoInterno = '' THEN 'Não Informado' ELSE co.dsCodigoInterno END,
 	'dtDataEmissao', CASE WHEN co.dtDataEmissao IS NULL THEN 'Não Informado' ELSE DATE_FORMAT(co.dtDataEmissao, '%d/%m/%Y') END,
 	'dtDataVencimento', CASE WHEN co.dtDataVencimento IS NULL THEN 'Não Informado' ELSE DATE_FORMAT(co.dtDataVencimento, '%d/%m/%Y') END,
-	'dtDataRecebimento', CASE WHEN co.dtDataRecebimento IS NULL THEN 'Não Informado' ELSE DATE_FORMAT(co.dtDataRecebimento, '%d/%m/%Y') END ,
-	'dsFormaRecebimento', CASE WHEN co.dsFormaRecebimento IS NULL OR co.dsFormaRecebimento = '' THEN 'Não Informado' ELSE co.dsFormaRecebimento END,
+	'dtDataPagamento', CASE WHEN co.dtDataPagamento IS NULL THEN 'Não Informado' ELSE DATE_FORMAT(co.dtDataPagamento, '%d/%m/%Y') END ,
+	'dsFormaPagamento', CASE WHEN co.dsFormaPagamento IS NULL OR co.dsFormaPagamento = '' THEN 'Não Informado' ELSE co.dsFormaPagamento END,
 	'vlValor', CASE WHEN co.vlvalor IS NULL THEN 'Não Informado' ELSE REPLACE(REPLACE(REPLACE(FORMAT( co.vlvalor,2), '.', '|'), ',', '.'), '|', ',') END,
 	'dsNatureza', CASE WHEN co.dsNatureza IS NULL OR co.dsNatureza = '' THEN 'Não Informado' ELSE dsNatureza END,
 	'dsContaContabil', CASE WHEN co.dsContaContabil IS NULL OR co.dsContaContabil = '' THEN 'Não Informado' ELSE co.dsContaContabil END,
 	'dsUnidadeNegocio',CASE WHEN co.dsUnidadeNegocio IS NULL OR co.dsUnidadeNegocio = '' THEN 'Não Informado' ELSE co.dsUnidadeNegocio END ,
-	'dsCentroReceita', CASE WHEN co.dsCentroReceita IS NULL OR co.dsCentroReceita = '' THEN 'Não Informado' ELSE co.dsCentroReceita END 
+	'dsCentroCusto', CASE WHEN co.dsCentroCusto IS NULL OR co.dsCentroCusto = '' THEN 'Não Informado' ELSE co.dsCentroCusto END 
 	)
 ) into select_result
 FROM `ctbsdb_dev`.`co_faturamento` co, ftr
 WHERE 1=1
 AND co.dsUnidadeNegocio LIKE (CASE WHEN ftr.dsUnidadeNegocio IS NULL THEN '%' WHEN ftr.dsUnidadeNegocio = '' THEN '%' ELSE ftr.dsUnidadeNegocio end)
-AND co.dsFormaRecebimento LIKE (CASE WHEN ftr.dsFormaRecebimento IS NULL THEN '%' WHEN ftr.dsFormaRecebimento = '' THEN '%' ELSE ftr.dsFormaRecebimento end)
+AND co.dsFormaPagamento LIKE (CASE WHEN ftr.dsFormaPagamento IS NULL THEN '%' WHEN ftr.dsFormaPagamento = '' THEN '%' ELSE ftr.dsFormaPagamento end)
 AND co.dtDataEmissao 
 	BETWEEN (CASE WHEN ftr.dtDataEmissaoMin IS NULL THEN DATE_SUB(curdate(), INTERVAL 2 MONTH) WHEN ftr.dtDataEmissaoMin = '' THEN DATE_SUB(curdate(), INTERVAL 2 MONTH) ELSE ftr.dtDataEmissaoMin END)
 	AND (CASE WHEN ftr.dtDataEmissaoMax IS NULL THEN curdate() WHEN ftr.dtDataEmissaoMax = '' THEN curdate() ELSE ftr.dtDataEmissaoMax END)

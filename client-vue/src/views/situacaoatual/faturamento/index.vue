@@ -19,7 +19,7 @@
       <div :class="$style.searchHeader">
         <div class="row">
           <div class="col-xl-2">
-            <a-month-picker placeholder="Mês" @change="onChangeMonth" size="large" :disabled-date="disabledDate" :defaultValue="moment()" :format="MM-YYYY">
+            <a-month-picker placeholder="Mês" @change="onChangeMonth" size="large" :disabled-date="disabledDate" :defaultValue="moment()" :format="monthFormat">
                   <template slot="renderExtraFooter">
                   Dados a partir de {{moment(String(this.dateLimits[0]["min"])).format('DD/MM/YYYY')}}
                   </template>
@@ -190,6 +190,7 @@ export default {
       chartCardData: data.chartCardData,
       statsConfig: data.statsConfig,
       dateLimits: [{min:null, max:null}],
+      monthFormat: 'MM/YYYY',
       myArray: [],
       filtros: null,
       stats: null,
@@ -202,11 +203,11 @@ export default {
         { title: "#", dataIndex: "idFaturamento", sorter: true},
         { title: "Data Lançamento", dataIndex: "dtDataEmissao", sorter: true },
         { title: "Data do Vencimento", dataIndex: "dtDataVencimento", sorter: true },
-        { title: "Data do Recebimento", dataIndex: "dtDataRecebimento", sorter: true },
-        { title: "Forma de Recebimento", dataIndex: "dsFormaRecebimento", sorter: true },
+        { title: "Data do Recebimento", dataIndex: "dtDataPagamento", sorter: true },
+        { title: "Forma de Recebimento", dataIndex: "dsFormaPagamento", sorter: true },
         { title: "Valor", dataIndex: "vlValor", sorter: true },
         { title: "Unidade de Negócios", dataIndex: "dsUnidadeNegocio", sorter: true},
-        { title: "Centro de Receitas", dataIndex: "dsCentroReceita", sorter: true }
+        { title: "Centro de Receitas", dataIndex: "dsCentroCusto", sorter: true }
         //#### Teste
         //{ title: "Centro de Receitas", dataIndex: "dsCentroReceita", sorter: true, filters: [{ text: 'Male', value: 'male' },{ text: 'Female', value: 'female' }]}
       ],

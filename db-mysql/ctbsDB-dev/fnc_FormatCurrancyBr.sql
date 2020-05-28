@@ -4,7 +4,11 @@ CREATE FUNCTION `FormatCurrancyBr`(p_valor DECIMAL(20,2))
 RETURNS VARCHAR(50)
 NO SQL
 BEGIN
-	RETURN CONCAT('R$ ', REPLACE(REPLACE(REPLACE(FORMAT(p_valor, 2),'.',';'),',','.'),';',','));
+	CASE WHEN p_valor IS NULL THEN
+		RETURN 'R$ 0,00';
+	ELSE
+		RETURN CONCAT('R$ ', REPLACE(REPLACE(REPLACE(FORMAT(p_valor, 2),'.',';'),',','.'),';',','));
+	END CASE;
 END$$
 
 DELIMITER ;

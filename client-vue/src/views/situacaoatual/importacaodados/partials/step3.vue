@@ -6,10 +6,6 @@
         momento. Por favor, tente novamente mais tarde.
       </p>
     </section>
-    <section v-else>
-      <div v-if="loading">Carregando...</div>
-      <div v-else v-for="currency in info" class="currency">oi</div>
-    </section>
 
     <a-table
       :columns="columns"
@@ -68,20 +64,22 @@ export default {
       csv: [],
       map: [],
       fieldsToMap: [],
+      //firstLineRemoved: false,
       form: {
         csv: null,
         idEmpresa: 1,
         idUsuario: 1,
-        cdTipo: "F",
+        cdTipoImport: null,
         dsNomeArquivo: "NomeArquivo.csv"
       },
-      url: "https://localhost:44396/situacaoatual/importCSV",
-      loading: false,
+      url: "https://localhost:44396/api/situacaoatual/Importcsv",
       errored: false
     };
   },
   mounted() {
     this.fieldsToMap = store.state.fieldsToMap;
+    this.form.cdTipoImport = store.state.tipoImportSelected;
+    this.form.dsNomeArquivo = store.state.fileName;
     this.csv = this.s_csv;
     this.map = this.s_map;
 
@@ -114,8 +112,18 @@ export default {
       }
     });
 
-    //Preenchimento dos dados na tabela
-    this.csv.shift(); // Remove primeira linha (cabeçalhos)
+    // *Preenchimento dos dados na tabela*
+
+    // Remove primeira linha (cabeçalhos)
+    /*
+    if(!this.firstLineRemoved)
+    {
+      this.csv.shift();
+      this.firstLineRemoved = true;
+    }
+    */
+
+
     let i = 0;
     this.form.csv = map(this.csv, row => {
       let newRow = {};
@@ -143,7 +151,7 @@ export default {
     },
     fetch(params = {}) {
       //console.log('params:', params);
-      this.loading = true;
+      this.$nprogress.start();
       this.form.csv = orderBy(
         this.form.csv,
         params.sortField,
@@ -151,48 +159,37 @@ export default {
       );
       const pagination = { ...this.pagination };
       //pagination.total = 200;
-      this.loading = false;
+      this.$nprogress.done();
       this.pagination = pagination;
     },
     completeStep() {
-      const _this = this;
+
       this.$emit("input", this.form.csv);
-      this.$message.loading("Loading...");
+      this.$nprogress.start();
+
 
       console.log("csv");
       console.log(this.form.csv);
 
-/*
-      axios
+      var res = axios
         .post(this.url, this.form)
         .then(response => {
-          console.log("post ok");
           this.$message.success("Importação concluída com sucesso");
+          this.$nprogress.done();
           return true;
         })
-        .catch(response => {
+        .catch(error => {
           this.$message.error("Falha na importação");
-          console.error(response);
-          console.log("error post");
+          this.$notification.error({message:"Falha na importação", description: error.response.data, duration:0});
+          console.error(error);
+          console.error(error.response.data);
           return false;
         })
-        .finally(() => (this.loading = false));
-      console.log("finally");
-      return true;
-*/
+        .finally(() => (this.$nprogress.done()));
+
+      return res;
+
     },
-    info() {
-      this.$message.info("This is a normal message");
-    },
-    success() {
-      this.$message.success("This is a message of success");
-    },
-    error() {
-      this.$message.error("This is a message of error");
-    },
-    warning() {
-      this.$message.warning("This is message of warning");
-    }
   },
   computed: {
     s_csv() {
