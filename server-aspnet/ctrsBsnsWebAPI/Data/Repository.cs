@@ -30,17 +30,42 @@ namespace CtrsBsnsWebAPI.Data
         //public void Delete<T>(T entity) where T : class {_context.Remove(entity);}
         //public async Task<bool> SaveChangesAsync(){return (await _context.SaveChangesAsync()) > 0;}
 
-        public async Task<Result> GetFiltros(string jsonParams)
+        public async Task<Result> GetFiltros(string jsonParams, string cdTipoImport)
+        {
+            try {
+                Result r = await _context.Set<Result>().FromSql<Result>(
+                    "call getSituacaoAtualFiltro(@jsonParams,@p_cdTipoImp, @result); SELECT 0 id, @result resultValue;"
+                    , new MySqlParameter("@jsonParams", MySqlDbType.LongText) { Value = null, ParameterName = "@jsonParams" }
+                    , new MySqlParameter("@p_cdTipoImp", MySqlDbType.String) { Value = cdTipoImport, ParameterName = "@p_cdTipoImp" }
+                    ).FirstOrDefaultAsync();
+
+                dynamic obj = JsonConvert.DeserializeObject(r.resultValue);
+                return new Result() { id = obj.status, resultValue = ((obj.result == null) ? "Erro não especificado!" : obj.result) };
+
+                //return new Result() { id = 200, resultValue = "Teste!" };
+            }
+            catch (Exception ex)
+            {
+                //code for any other type of exception
+                throw;
+            }
+            finally
+            {
+                //call this if exception occurs or not
+            }
+        }
+
+        public async Task<Result> GetSituacaoAtualLista(string jsonParams, string cdTipoImport)
         {
             Result r = await _context.Set<Result>().FromSql<Result>(
-                "call getSituacaoAtualFiltro(@jsonParams, @result); SELECT 0 id, @result resultValue;"
+                "call getSituacaoAtualLista(@jsonParams,@p_cdTipoImp, @result); SELECT 0 id, @result resultValue;"
                 , new MySqlParameter("@jsonParams", MySqlDbType.LongText) { Value = jsonParams, ParameterName = "@jsonParams" }
+                , new MySqlParameter("@p_cdTipoImp", MySqlDbType.String) { Value = cdTipoImport, ParameterName = "@p_cdTipoImp" }
                 ).FirstOrDefaultAsync();
 
             dynamic obj = JsonConvert.DeserializeObject(r.resultValue);
-            return new Result() { id = obj.status, resultValue = ((obj.result == null) ? "Erro não especificado!" : obj.result) };
+            return new Result() { id = obj.status, resultValue = ((obj.result == null && obj.status != 200) ? "Erro não especificado!" : obj.result) };
         }
-
         public async Task<Result> GetAllSituacaoAtualAsync(string jsonParams)
         {
             Result r = await _context.Set<Result>().FromSql<Result>(

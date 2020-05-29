@@ -30,6 +30,7 @@ namespace CtrsBsnsWebAPI
         {
             var connection = Configuration["ConexaoMySql:MySqlConnectionString"];
             services.AddScoped<IRepository<ApplicationContext>, Repository<ApplicationContext>>();
+            services.AddScoped<IRelatorioRepository<ApplicationContext>, RelatorioRepository<ApplicationContext>>();
             services.AddDbContext<ApplicationContext>(
                 options => options.UseMySQL(connection)
             );

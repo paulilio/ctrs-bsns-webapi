@@ -21,13 +21,17 @@ namespace CtrsBsnsWebAPI.Controllers
         }
 
         //Test: HttpPost: situacaoatual/GetFiltro jsonParams
-        [HttpGet("GetFiltro")]
+        [HttpPost("GetFiltro")]
         [Route("GetFiltro")]
-        public async Task<ActionResult<IEnumerable<string>>> GetFiltro(string jsonParams)
+        public async Task<ActionResult<IEnumerable<string>>> GetFiltro(dynamic data)
         {
             try
             {
-                Result _result = await _repo.GetFiltros(jsonParams);
+                JsonElement jsonResult = data;
+                Result _result = await _repo.GetFiltros(
+                      ""
+                    , JObject.Parse(jsonResult.GetRawText()).SelectToken("$.cdTipoImport").ToString()
+                    );
 
                 if (_result.id == 200)
                     return this.Ok(_result.resultValue);
@@ -66,6 +70,37 @@ namespace CtrsBsnsWebAPI.Controllers
                 JsonElement jsonResult = data;
                 string jsonParams = JObject.Parse(jsonResult.GetRawText()).SelectToken("$.params").ToString();
                 Result _result = await _repo.GetAllSituacaoAtualAsync(jsonParams);
+
+                if (_result.id == 200)
+                    return this.Ok(_result.resultValue);
+                else
+                    throw new System.InvalidOperationException(_result.resultValue);
+            }
+            catch (InvalidOperationException ex)
+            {
+                //code specifically for a ArgumentNullException
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou: " + ex.Message);
+                //return BadRequest();
+            }
+
+            catch (Exception ex)
+            {
+                //return this.StatusCode(StatusCodes.Status400BadRequest);
+                throw;
+            }
+        }
+
+        [HttpPost("GetSituacaoAtualLista")]
+        [Route("GetSituacaoAtualLista")]
+        public async Task<ActionResult<IEnumerable<string>>> GetSituacaoAtualLista(dynamic data)
+        {
+            try
+            {
+                JsonElement jsonResult = data;
+                Result _result = await _repo.GetSituacaoAtualLista(
+                      JObject.Parse(jsonResult.GetRawText()).SelectToken("$.params").ToString()
+                    , JObject.Parse(jsonResult.GetRawText()).SelectToken("$.cdTipoImport").ToString()
+                    );
 
                 if (_result.id == 200)
                     return this.Ok(_result.resultValue);

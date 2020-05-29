@@ -1,0 +1,85 @@
+@import '@/assets/styles/mixins.scss';
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/*  STYLES FOR "DOCS" MODULE */
+
+.ant-calendar-picker-input.ant-input {
+  border-radius: 0px;
+  height: 53px;
+}
+
+$lighter-cyan: #fafdff;
+$light-cyan-2: #e7f6ff;
+$light-cyan: #91d8ff;
+$light-cyan-2: lighten(#52c7c8, 33%);
+$cyan: $primary;
+$cyan-2: #3d80e4;
+
+$light-green: #3ac134;
+$lighten-green-2: #d0ffdf;
+$lighten-green-3: #f6fff5;
+$green-2: #12c349;
+$dark-green-2: #0db140;
+$dark-cyan: #0076b1;
+$darken-cyan: #066599;
+$dark-purple: #32325d;
+
+$green: #50a92f;
+$orange: #f2a654;
+$orange-2: #ffa800;
+
+$dark-gray: #333;
+$dark-gray-2: #373e42;
+
+$lighter-gray: #f9f9f9;
+$light-gray: #e4e4e4;
+
+
+.wrapper {
+  flex-grow: 100;
+}
+
+.searchHeader {
+  align-items: center;
+  border-bottom: 1px solid $gray-border;
+  padding-right: rem(30);
+  height: 54px;
+}
+
+.searchDropdown {
+  padding-right: 10px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  border-bottom: 1px solid $gray-border;
+  padding-right: rem(30);
+  height: 54px;
+}
+
+.headerSearch {
+  flex-grow: 1;
+  position: relative;
+
+}
+
+.headerSearch {
+  flex-grow: 1;
+  position: relative;
+
+}
+
+.headerlink {
+  color: $cyan;
+  transition: color 0.15s ease;
+  font-size: rem(15);
+  font-weight: 600;
+  white-space: nowrap;
+
+  &:hover {
+    color: $dark-purple;
+  }
+}

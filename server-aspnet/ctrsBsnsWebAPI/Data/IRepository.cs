@@ -17,8 +17,9 @@ namespace CtrsBsnsWebAPI.Data
         //Task<bool> SaveChangesAsync();
 
         //ENTIDADE SITUACAO ATUAL
-        Task<Result> GetFiltros(string jsonParams);
+        Task<Result> GetFiltros(string jsonParams, string cdTipoImport);
         Task<Result> GetAllSituacaoAtualAsync(string jsonParams);
+        Task<Result> GetSituacaoAtualLista(string jsonParams, string cdTipoImport);
         public Result ImportCSV(string json, string dsNomeArquivo, int idUsuario, int idEmpresa, string cdTipoImport);
 
     }

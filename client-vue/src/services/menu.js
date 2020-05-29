@@ -22,21 +22,24 @@ export const getLeftMenuData = [
       },
       {
         title: "Contas a Receber",
-        key: "chart1",
-        url: "/charts/chart",
-        pro: true
+        key: "contasReceber",
+        url: "/situacaoatual/contasReceber",
       },
       {
         title: "Contas a Pagar",
-        key: "chart",
-        url: "/charts/chart",
-        pro: true
+        key: "contasPagar",
+        url: "/situacaoatual/contasPagar",
+        pro: false
       },
       {
         title: "Inadimplência",
-        key: "peity",
-        url: "/charts/peity",
-        pro: true
+        key: "inadimplencia",
+        url: "/situacaoatual/inadimplente",
+      },
+      {
+        title: "Caixas e Bancos",
+        key: "bancos",
+        url: "/situacaoatual/banco",
       }
     ]
   },
@@ -46,9 +49,15 @@ export const getLeftMenuData = [
     icon: "icmn icmn-stats-bars",
     children: [
       {
+        title: "Confronto de Dados",
+        key: "relconfronto",
+        url: "/relatorios/confronto"
+      },
+      {
         title: "Fluxo de Caixa",
         key: "chartist",
-        url: "/charts/chartist"
+        url: "/charts/chartist",
+        pro: true
       },
       {
         title: "DRE",

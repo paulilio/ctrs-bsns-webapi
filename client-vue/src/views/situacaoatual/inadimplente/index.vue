@@ -2,7 +2,7 @@
   <div>
     <!-- Estatísticas -->
     <div class="utils__title mb-3">
-      <strong class="text-uppercase font-size-16">ÚLTIMAS ESTATÍSTICAS</strong>
+      <strong class="text-uppercase font-size-16">Inadimplentes</strong>
     </div>
     <div class="row">
       <div class="col-xl-4" v-for="(st, index) in stats" :key="index">
@@ -35,94 +35,60 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
 
-    <!--
-    <div class="utils__title mb-3">
-      <strong class="text-uppercase font-size-8"></strong>
-    </div>
-    <div class="row">
-      <div class="col-xl-4" v-for="(chartCard, index) in chartCardData" :key="index">
-        <cui-chart-card
-          :title="chartCard.title"
-          :amount="chartCard.amount"
-          :chartData="chartCard.chartData"
-        />
+    <div class="card">
+
+      <div class="card-body">
+
+        <!--lista-->
+        <a-table
+        :columns="columns"
+        :dataSource="this.datasource"
+        :row-key="record => record.idFaturamento"
+        @change="handleTableChange"
+        >
+        <a slot="name" slot-scope="text">{{ text }}</a>
+        <p slot="expandedRowRender" slot-scope="record" style="margin: 0">
+          Cpf CNPJ Cliente: {{ record.dsCpfCnpjCliente }}
+          <br />
+          <br />
+          Cliente: {{ record.dsNomeCliente }}
+          <br />
+          <br />
+          Natureza: {{ record.dsNatureza }}
+          <br />
+          <br />
+          Conta Contábil: {{ record.dsContaContabil }}
+          <br />
+          <br />
+          Código Interno: {{ record.dsCodigoInterno }}
+          <br />
+          <br />
+          Carga Id: {{ record.idCarga }}
+          <br />
+          <br />
+          Nome Arquivo: {{ record.dsNomeArquivo }}
+          <br />
+          <br />
+          Data Importação: {{ record.dtImport }}
+          <br />
+          <br />
+          Usuário: {{ record.dsLogin }}
+        </p>
+        </a-table>
       </div>
+
     </div>
-
--->
-
-
-
-
-
-
-
-<!--
-    <div class="row">
-      <div class="col-lg-12">
--->
-        <div class="card">
-          <div class="card-header">
-
-            <div class="utils__title">+
-              <strong>Faturamento</strong>
-            </div>
-          </div>
-
-          <div class="card-body">
-
-            <!--lista-->
-            <a-table
-            :columns="columns"
-            :dataSource="this.datasource"
-            :row-key="record => record.idFaturamento"
-            @change="handleTableChange"
-            >
-            <a slot="name" slot-scope="text">{{ text }}</a>
-            <p slot="expandedRowRender" slot-scope="record" style="margin: 0">
-              Cpf CNPJ Cliente: {{ record.dsCpfCnpjCliente }}
-              <br />
-              <br />
-              Cliente: {{ record.dsNomeCliente }}
-              <br />
-              <br />
-              Natureza: {{ record.dsNatureza }}
-              <br />
-              <br />
-              Conta Contábil: {{ record.dsContaContabil }}
-              <br />
-              <br />
-              Código Interno: {{ record.dsCodigoInterno }}
-              <br />
-              <br />
-              Carga Id: {{ record.idCarga }}
-              <br />
-              <br />
-              Nome Arquivo: {{ record.dsNomeArquivo }}
-              <br />
-              <br />
-              Data Importação: {{ record.dtImport }}
-              <br />
-              <br />
-              Usuário: {{ record.dsLogin }}
-            </p>
-            </a-table>
-          </div>
-
-
-      </div>
-      <div class="card">
+    <div class="card">
 
         <div class="card-body">
           <div class="row">
             <div class="col-lg-6">
               <h5 class="text-black">
-                <strong>Faturamento/Categoria</strong>
+                <strong>Inadimplentes/Categoria</strong>
               </h5>
               <div class="mb-5">
                 <vue-c3 :handler="pie" class="height-300"></vue-c3>
@@ -131,7 +97,7 @@
 
             <div class="col-lg-6">
               <h5 class="text-black">
-                <strong>Faturamento</strong>
+                <strong>Inadimplentes</strong>
               </h5>
               <div class="mb-5">
                 <!--<vue-c3 :handler="zoom" class="height-300"></vue-c3>-->
@@ -307,7 +273,7 @@ export default {
         headers: {},
         data: {
           params: '', //.replace(/\[|\]/g, ""), // remove brackets
-          cdTipoImport: 'F'
+          cdTipoImport: 'i'
         }
       })
       .then(res => {
@@ -384,7 +350,7 @@ export default {
         headers: {},
         data: {
           params: JSON.stringify(this.filtrosRequest), //.replace(/\[|\]/g, ""), // remove brackets
-          cdTipoImport: 'F'
+          cdTipoImport: 'I'
         }
       })
       .then(res => {

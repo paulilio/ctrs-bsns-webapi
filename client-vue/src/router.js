@@ -42,6 +42,49 @@ const router = new Router({
           },
           component: () => import("./views/situacaoatual/faturamento")
         },
+        // Contas a Receber
+        {
+          path: "/situacaoatual/contasReceber",
+          meta: {
+            title: "contas a Receber"
+          },
+          component: () => import("./views/situacaoatual/contasReceber")
+        },
+        // Contas a Pagar
+        {
+          path: "/situacaoatual/contasPagar",
+          meta: {
+            title: "contas a Pagar"
+          },
+          component: () => import("./views/situacaoatual/contasPagar")
+        },
+        // Inadimplentes
+        {
+          path: "/situacaoatual/inadimplente",
+          meta: {
+            title: "Inadimplentes"
+          },
+          component: () => import("./views/situacaoatual/inadimplente")
+        },
+        // Caixa e Banco
+        {
+          path: "/situacaoatual/banco",
+          meta: {
+            title: "Caixa e Banco"
+          },
+          component: () => import("./views/situacaoatual/banco")
+        },
+
+        // Relatórios - Confronto de Dados
+        {
+          path: "/relatorios/confronto",
+          meta: {
+            title: "Confronto de Dados"
+          },
+          component: () => import("./views/relatorios/confronto")
+        },
+
+
         // Técnico-Wizard
         {
           path: "/wizard",

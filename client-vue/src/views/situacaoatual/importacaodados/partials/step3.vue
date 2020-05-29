@@ -34,7 +34,7 @@
       </p>
     </a-table>
 
-    <div>{{ this.form.csv }}</div>
+    <!--<div>{{ this.form.csv }}</div>-->
   </div>
 </template>
 

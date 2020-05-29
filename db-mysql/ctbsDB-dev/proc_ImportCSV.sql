@@ -29,6 +29,8 @@ SET result := (select JSON_OBJECT("status", 500, "result", @full_error));
 ROLLBACK;
 END; 
 
+
+
 /*
 DECLARE EXIT HANDLER FOR SQLEXCEPTION
 BEGIN 
@@ -102,7 +104,7 @@ FROM
             descNatureza VARCHAR(50) PATH '$."descNatureza"' NULL ON EMPTY,
             descContaContabil VARCHAR(50) PATH '$."descContaContabil"' NULL ON EMPTY,
             descUnidadeNegocio VARCHAR(50) PATH '$."descUnidadeNegocio"' NULL ON EMPTY,
-            descCentroCusto VARCHAR(50) PATH '$."descCentroCusto"' NULL ON EMPTY,
+            descCentroCusto VARCHAR(50) PATH '$."descCentoCusto"' NULL ON EMPTY,
             descBanco VARCHAR(50) PATH '$."descBanco"' NULL ON EMPTY
         )
     ) AS tt;
@@ -125,11 +127,15 @@ FROM
     ,p_dsNomeArquivo     
     ,v_dtImport
     FROM DUAL;
+SET v_idcarga = last_insert_id();
+-- SELECT LAST_INSERT_ID() INTO v_idcarga FROM ctbsdb_dev.co_carga;
+-- Debug
+-- SIGNAL SQLSTATE '45000'
+-- SET MESSAGE_TEXT = "";
 
 /*VERIFICA DUPLICIDADE?*/
 /*INSERIR NAS TABELAS DEFINITIVAS? OU SOMENTE AO FINALIZAR O PASSO?!*/
 
-SELECT LAST_INSERT_ID() INTO v_idcarga FROM ctbsdb_dev.co_carga;
 CASE p_cdTipoImp
     WHEN  'F' THEN
         SET v_TipoTabela =  'ctbsdb_dev.co_faturamento';
@@ -138,7 +144,7 @@ CASE p_cdTipoImp
     WHEN  'P' THEN
         SET v_TipoTabela =  'ctbsdb_dev.co_conta_pagar';
     WHEN  'I' THEN
-        SET v_TipoTabela =  'ctbsdb_dev.co_inadimplentes';
+        SET v_TipoTabela =  'ctbsdb_dev.co_inadimplente';
     WHEN 'B' THEN
         SET v_TipoTabela = 'ctbsdb_dev.co_banco';
         SET v_UsaCampoBanco = 1;
@@ -190,6 +196,8 @@ SET @SQLText = CONCAT(
 -- GET DIAGNOSTICS nRowsAffected = ROW_COUNT;
 -- COMMIT;
 -- SET result := (select JSON_OBJECT("status", 200, "result", @SQLText));   
+
+-- Debug
 -- SIGNAL SQLSTATE '45000'
 -- SET MESSAGE_TEXT = "";
 
@@ -222,7 +230,7 @@ END $$
 DELIMITER ;
 
 /* TEST PROC
-CALL `ctbsdb_dev`.`proc_ImportCSV`('[ { "uid": 0, "descNomeCliente": "Joao", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 4.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "1" }, { "uid": 1, "descNomeCliente": "Maria", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 2.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "2" }, { "uid": 2, "descNomeCliente": "Joao", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 4.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "1" }, { "uid": 3, "descNomeCliente": "Maria", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 2.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "2" }, { "uid": 4, "descNomeCliente": "Daniel", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaPagamento": "Cartão Credito", "descValor": " R$ 2.500,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "3" }, { "uid": 5, "descNomeCliente": "Paulilio", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaPagamento": "Cartão Credito", "descValor": " R$ 3.240,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "4" }, { "uid": 6, "descNomeCliente": "Paulilio", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/6/2020", "descFormaPagamento": "Cartão Credito", "descValor": " R$ 3.240,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "4" }, { "uid": 7, "descNomeCliente": "Gustavo", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 1.234,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "5" } ]', 'teste.csv', 1, 1, 'F', @test);
+CALL `ctbsdb_dev`.`proc_ImportCSV`('[ { "uid": 0, "descNomeCliente": "Joao", "Lancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 4.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "1" }, { "uid": 1, "descNomeCliente": "Maria", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 2.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "2" }, { "uid": 2, "descNomeCliente": "Joao", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 4.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "1" }, { "uid": 3, "descNomeCliente": "Maria", "descDataLancamento": "3/4/2020", "descDataVencimento": "3/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 2.000,00 ", "descNatureza": "", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "2" }, { "uid": 4, "descNomeCliente": "Daniel", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaPagamento": "Cartão Credito", "descValor": " R$ 2.500,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "3" }, { "uid": 5, "descNomeCliente": "Paulilio", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaPagamento": "Cartão Credito", "descValor": " R$ 3.240,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "4" }, { "uid": 6, "descNomeCliente": "Paulilio", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/6/2020", "descFormaPagamento": "Cartão Credito", "descValor": " R$ 3.240,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "4" }, { "uid": 7, "descNomeCliente": "Gustavo", "descDataLancamento": "14/4/2020", "descDataVencimento": "14/5/2020", "descFormaPagamento": "Boleto", "descValor": " R$ 1.234,00 ", "descNatureza": " ", "descContaContabil": "", "descUnidadeNegocio": "Goiânia", "descCentoReceitas": "Marista", "descCodigoInterno": "5" } ]', 'teste.csv', 1, 1, 'F', @test);
 SELECT @test as t;
 */
 

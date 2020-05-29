@@ -30,7 +30,7 @@ end if;
 -- SET @jsonstr:='[{"dsUnidadeNegocio":"Goiânia"},{"dsCentroCusto":""},{"dsFormaRecebimento":""},{"dtDataEmissaoMin":"2020-04-03"},{"dtDataEmissaoMax":"2020-04-14"}]';
 WITH ftr AS (SELECT 
   JSON_UNQUOTE(REPLACE(REPLACE(JSON_EXTRACT(jsonParams,'$**.dsUnidadeNegocio'),'[',''),']','')) AS dsUnidadeNegocio
-, JSON_UNQUOTE(REPLACE(REPLACE(JSON_EXTRACT(jsonParams,'$**.dsFormaRecebimento'),'[',''),']','')) AS dsFormaRecebimento
+, JSON_UNQUOTE(REPLACE(REPLACE(JSON_EXTRACT(jsonParams,'$**.dsFormaPagamento'),'[',''),']','')) AS dsFormaPagamento
 , JSON_UNQUOTE(REPLACE(REPLACE(JSON_EXTRACT(jsonParams,'$**.dtDataEmissaoMin'),'[',''),']','')) AS dtDataEmissaoMin
 , JSON_UNQUOTE(REPLACE(REPLACE(JSON_EXTRACT(jsonParams,'$**.dtDataEmissaoMax'),'[',''),']','')) AS dtDataEmissaoMax
 )

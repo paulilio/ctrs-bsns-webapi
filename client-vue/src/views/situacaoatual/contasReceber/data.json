@@ -1,0 +1,33 @@
+{
+  "statsConfig": [
+    {
+      "vlMedioMensal": {
+        "title": "Contas a Receber - Média Mensal",
+        "type": "primary",
+        "icon": "stats-bars"
+      }
+    },
+    {
+      "qtTotalRegistro" : {
+        "title": "Registros Importados",
+        "type": "success",
+        "icon": "database"
+      }
+    },
+    {
+      "dtUltImport": {
+        "title": "Última Importação",
+        "type": "empty",
+        "icon": "download3"
+      }
+    }
+  ],
+  "filtroDicionario": [
+    {
+        "dsUnidadeNegocio": "Unidade de Negócio",
+        "dsCentroCusto": "Centro de Receitas",
+        "dsFormaPagamento": "Forma de Recebimento"
+    }
+  ]
+}
+
