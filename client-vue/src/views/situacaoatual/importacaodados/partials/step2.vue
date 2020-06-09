@@ -84,12 +84,14 @@ export default {
           //map(this.fieldsToMap, k =>
         if (o.mandatory === true) {
           test = get(this.map,o.key);
-          if(test === null || test == '') valido = false;
+          if(test === null || test == 99) {
+            valido = false;
+          }
         }; //x[k.key].value)
       });
 
       if(!valido) {
-        this.$message.error("É necessário preencher os campos obrigatórios.");
+        this.$message.error("É necessário preencher os campos obrigatórios, com valores existentes.");
         return false;
       }else{
         store.dispatch("setMap", this.map);

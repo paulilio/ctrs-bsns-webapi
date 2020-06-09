@@ -15,17 +15,32 @@ const getDefaultState = () => {
     fieldsToMap: [
         { label: "CPF/CNPJ do Cliente", key: "descCpfCnpjCliente", usedBy:'F,R,P,I,B', mandatory:false },
         { label: "Cliente", key: "descNomeCliente", usedBy:'F,R,P,I,B', mandatory:false },
+        { label: "CNPJ do Fornecedor", key: "descCpfCnpjCliente", usedBy:'E', mandatory:false },
+        { label: "Fornecedor", key: "descNomeCliente", usedBy:'E', mandatory:false },
+
         { label: "Data de Emissão", key: "descDataEmissao", usedBy:'F,R,P,I,B', mandatory:true },
+        { label: "Data da Compra", key: "descDataEmissao", usedBy:'E', mandatory:true },
+
         { label: "Data de Vencimento", key: "descDataVencimento", usedBy:'F,R,P,I,B', mandatory:true },
         { label: "Data do Pagamento", key: "descDataPagamento", usedBy:'F,R,I,B', mandatory:false },
         { label: "Forma de Pagamento", key: "descFormaPagamento", usedBy:'F,R,I,B', mandatory:false },
+
         { label: "Valor", key: "descValor", usedBy:'F,R,P,I,B', mandatory:true },
+        { label: "Custo Total", key: "descValor", usedBy:'E', mandatory:true },
+
+        { label: "Produto", key: "descProduto", usedBy:'E', mandatory:true },
+        { label: "Linha de Produto", key: "descLinhaProduto", usedBy:'E', mandatory:true },
+        { label: "Quantidade", key: "descQuantidade", usedBy:'E', mandatory:true },
+        { label: "Custo Unitário", key: "descValorUnitario", usedBy:'E', mandatory:true },
+
         { label: "Natureza", key: "descNatureza", usedBy:'F,R,P,I,B', mandatory:false },
         { label: "Conta Contábil", key: "descContaContabil", usedBy:'F,R,P,I,B', mandatory:false },
-        { label: "Unidade de Negócios", key: "descUnidadeNegocio", usedBy:'F,R,P,I,B', mandatory:false },
-        { label: "Centro de Receitas", key: "descCentoCusto", usedBy:'F,R,I,B', mandatory:false },
+        { label: "Unidade de Negócios", key: "descUnidadeNegocio", usedBy:'F,R,P,I,B,E', mandatory:false },
+        { label: "Centro de Custo", key: "descCentoCusto", usedBy:'F,R,I,B,E', mandatory:false },
+
         { label: "Caixas/Bancos", key: "descBanco", usedBy:'B', mandatory:true },
-        { label: "Código Interno", key: "descCodigoInterno", usedBy:'F,R,P,I,B', mandatory:false },
+        { label: "Código Interno", key: "descCodigoInterno", usedBy:'F,R,P,I,B,E', mandatory:false },
+
       ],
     tiposImport: [
       {
@@ -33,7 +48,8 @@ const getDefaultState = () => {
         "R": "Contas a Receber",
         "P": "Contas a Pagar",
         "I": "Inadimplência",
-        "B": "Caixas e Bancos"
+        "B": "Caixas e Bancos",
+        "E": "Estoque"
       }
     ]
   }

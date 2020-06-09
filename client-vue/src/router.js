@@ -74,6 +74,14 @@ const router = new Router({
           },
           component: () => import("./views/situacaoatual/banco")
         },
+        // Estoque
+        {
+          path: "/situacaoatual/estoque",
+          meta: {
+            title: "Estoque"
+          },
+          component: () => import("./views/situacaoatual/estoque")
+        },
 
         // Relatórios - Confronto de Dados
         {

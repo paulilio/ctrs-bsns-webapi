@@ -40,6 +40,11 @@ export const getLeftMenuData = [
         title: "Caixas e Bancos",
         key: "bancos",
         url: "/situacaoatual/banco",
+      },
+      {
+        title: "Estoque",
+        key: "estoque",
+        url: "/situacaoatual/estoque",
       }
     ]
   },

@@ -8,29 +8,16 @@
     </section>
 
     <a-table
-      :columns="columns"
+      :columns="columnsHead"
       :dataSource="this.form.csv"
       :row-key="record => record.uid"
       @change="handleTableChange"
     >
       <a slot="name" slot-scope="text">{{ text }}</a>
       <p slot="expandedRowRender" slot-scope="record" style="margin: 0">
-        Cpf CNPJ Cliente: {{ record.descCpfCnpjCliente }}
-        <br />
-        <br />
-        Cliente: {{ record.descNomeCliente }}
-        <br />
-        <br />
-        Natureza: {{ record.descNatureza }}
-        <br />
-        <br />
-        Conta Contábil: {{ record.descContaContabil }}
-        <br />
-        <br />
-        Caixas/Bancos: {{ record.descBanco }}
-        <br />
-        <br />
-        Código Interno: {{ record.descCodigoInterno }}
+        <span v-for="(f, k) in columnsBody" :key="k">
+            {{f.title}}: {{record[f.dataIndex]}}<br/><br/>
+        </span>
       </p>
     </a-table>
 
@@ -60,7 +47,8 @@ export default {
   },
   data() {
     return {
-      columns: [],
+      columnsHead: [],
+      columnsBody: [],
       csv: [],
       map: [],
       fieldsToMap: [],
@@ -86,29 +74,33 @@ export default {
     //Doc: regular expression number: https://www.regular-expressions.info/numericranges.html
 
     //Definição de colunas e mapeamento da tabela
-    this.columns.push({ title: "#", dataIndex: "uid", sorter: true }); //Código da linha na tabela
+    this.columnsHead.push({ title: "#", dataIndex: "uid", sorter: true }); //Código da linha na tabela
 
     let re_0A99 = /^([0-9]|[0-9][0-8])$/;
-    forEach(this.fieldsToMap, (f_obj, f_index, i) => {
-      if (f_obj.key == "descCpfCnpjCliente") return;
-      if (f_obj.key == "descNomeCliente") return;
-      if (f_obj.key == "descNatureza") return;
-      if (f_obj.key == "descContaContabil") return;
-      if (f_obj.key == "descBanco") return;
-      if (f_obj.key == "descCodigoInterno") return;
 
-      if (re_0A99.test(get(this.map, f_obj.key))) {
-       //Mapeado na fase anterior. null ou acima de 98 é não mapeado.
-        this.columns.push({
-          title: f_obj.label,
-          dataIndex: f_obj.key,
-          sorter: true
-        });
-      } else {
-        this.columns.push({
-          title: f_obj.label,
-          dataIndex: null
-        });
+    forEach(this.fieldsToMap, (f_obj, f_index, i) => {
+
+      if(f_obj.usedBy.indexOf(store.state.tipoImportSelected) > -1){
+        if (f_obj.key == "descCpfCnpjCliente") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+        if (f_obj.key == "descNomeCliente") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+        if (f_obj.key == "descNatureza") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+        if (f_obj.key == "descContaContabil") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+        if (f_obj.key == "descBanco") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+        if (f_obj.key == "descCodigoInterno") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+
+        if (re_0A99.test(get(this.map, f_obj.key))) {
+        //Mapeado na fase anterior. null ou acima de 98 é não mapeado.
+          this.columnsHead.push({
+            title: f_obj.label,
+            dataIndex: f_obj.key,
+            sorter: true
+          });
+        } else {
+          this.columnsHead.push({
+            title: f_obj.label,
+            dataIndex: null
+          });
+        }
       }
     });
 
@@ -135,6 +127,9 @@ export default {
     });
   },
   methods: {
+    mapRecord(o,p) {
+      return o[p];
+    },
     //Alterações Registro Tabela
     handleTableChange(pagination, filters, sorter) {
       console.log(pagination);

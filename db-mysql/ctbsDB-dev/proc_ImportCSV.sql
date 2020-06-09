@@ -68,7 +68,11 @@ insert into
    ,dsContaContabil   
    ,dsUnidadeNegocio  
    ,dsCentroCusto   
-   ,dsBanco           
+   ,dsBanco
+   ,dsProduto
+   ,dsLinhaProduto
+   ,dsQuantidade     
+   ,dsValorUnitario      
     )
 SELECT
     p_idUsuario      
@@ -89,6 +93,10 @@ SELECT
    ,tt.descUnidadeNegocio  
    ,tt.descCentroCusto   
    ,tt.descBanco   
+   ,tt.descProduto
+   ,tt.descLinhaProduto 
+   ,tt.descQuantidade
+   ,tt.descValorUnitario
 FROM
     JSON_TABLE(
         p_json,
@@ -105,7 +113,11 @@ FROM
             descContaContabil VARCHAR(50) PATH '$."descContaContabil"' NULL ON EMPTY,
             descUnidadeNegocio VARCHAR(50) PATH '$."descUnidadeNegocio"' NULL ON EMPTY,
             descCentroCusto VARCHAR(50) PATH '$."descCentoCusto"' NULL ON EMPTY,
-            descBanco VARCHAR(50) PATH '$."descBanco"' NULL ON EMPTY
+            descBanco VARCHAR(50) PATH '$."descBanco"' NULL ON EMPTY,
+            descProduto VARCHAR(50) PATH '$."descProduto"' NULL ON EMPTY,
+            descLinhaProduto VARCHAR(50) PATH '$."descLinhaProduto"' NULL ON EMPTY,
+            descQuantidade VARCHAR(50) PATH '$."descQuantidade"' NULL ON EMPTY,
+            descValorUnitario VARCHAR(50) PATH '$."descValorUnitario"' NULL ON EMPTY
         )
     ) AS tt;
 
@@ -148,49 +160,95 @@ CASE p_cdTipoImp
     WHEN 'B' THEN
         SET v_TipoTabela = 'ctbsdb_dev.co_banco';
         SET v_UsaCampoBanco = 1;
+    WHEN  'E' THEN
+        SET v_TipoTabela =  'ctbsdb_dev.co_estoque';
     #ELSE
         #SET pShipping = '5-day Shipping';
 END CASE;
 
-SET @SQLText = CONCAT(
- 'INSERT INTO '
-,v_TipoTabela
-,' (idCarga'
-,',dsCpfCnpjCliente'
-,',dsNomeCliente'
-,',dsCodigoInterno'
-,',dtDataEmissao'
-,',dtDataVencimento'
-,',dtDataPagamento'
-,',dsFormaPagamento'
-,',vlValor'
-,',dsNatureza'
-,',dsContaContabil'
-,',dsUnidadeNegocio'
-,',dsCentroCusto'
-,CASE WHEN v_UsaCampoBanco = 1 THEN ',dsBanco' ELSE '' END
-,')'
-,' SELECT '
-,v_idCarga
-,',dsCpfCnpjCliente '
-,',dsNomeCliente '
-,',dsCodigoInterno '   
-,',STR_TO_DATE(dsDataEmissao, ''%d/%m/%Y'') dtDataEmissao'
-,',STR_TO_DATE(dsDataVencimento, ''%d/%m/%Y'') dtDataVencimento'
-,',STR_TO_DATE(dsDataPagamento, ''%d/%m/%Y'') dtDataPagamento'
-,',dsFormaPagamento ' 
-,',ExtractDecimal(dsValor) vlValor'
-,',dsNatureza '
-,',dsContaContabil '
-,',dsUnidadeNegocio ' 
-,',dsCentroCusto '
-,CASE WHEN v_UsaCampoBanco = 1 THEN ',dsBanco' ELSE '' END
-,' FROM `ctbsdb_dev`.`co_import_csv` i '
-,' WHERE '
-,' i.idUsuario = ', p_idUsuario
-,' AND i.idEmpresa = ', p_idEmpresa
-,' AND i.dtImport = ''', v_dtImport,''''
-);
+IF (p_cdTipoImp = 'E') THEN
+    /*Quanto for Importação Tipo Estoque*/
+
+    SET @SQLText = CONCAT(
+    'INSERT INTO '
+    ,'ctbsdb_dev.co_estoque '
+    ,' (idCarga'
+    ,',dsCpfCnpjFornecedor'
+    ,',dsNomeFornecedor'
+    ,',dsCodigoInterno'
+    ,',dtDataCompra'
+    ,',vlValorTotal'
+    ,',dsUnidadeNegocio'
+    ,',dsCentroCusto'
+    ,',dsProduto'
+    ,',dsLinhaProduto'
+    ,',vlQuantidade'
+    ,',vlValorUnitario'
+    ,')'
+    ,' SELECT '
+    ,v_idCarga
+    ,',dsCpfCnpjCliente '
+    ,',dsNomeCliente '
+    ,',dsCodigoInterno '   
+    ,',STR_TO_DATE(dsDataEmissao, ''%d/%m/%Y'') dtDataEmissao'
+    ,',ExtractDecimal(dsValor) vlValorTotal'
+    ,',dsUnidadeNegocio ' 
+    ,',dsCentroCusto '
+    ,',dsProduto '
+    ,',dsLinhaProduto '
+    ,',ExtractDecimal(dsQuantidade) vlQuantidade'
+    ,',ExtractDecimal(dsValorUnitario) dsValorUnitario'
+    ,' FROM `ctbsdb_dev`.`co_import_csv` i '
+    ,' WHERE '
+    ,' i.idUsuario = ', p_idUsuario
+    ,' AND i.idEmpresa = ', p_idEmpresa
+    ,' AND i.dtImport = ''', v_dtImport,''''
+    );
+
+ELSE
+    /*Quanto for Importação Tipo fornecedor, contas a pagar, contas a receber, inadimplentes e bancos*/
+
+    SET @SQLText = CONCAT(
+    'INSERT INTO '
+    ,v_TipoTabela
+    ,' (idCarga'
+    ,',dsCpfCnpjCliente'
+    ,',dsNomeCliente'
+    ,',dsCodigoInterno'
+    ,',dtDataEmissao'
+    ,',dtDataVencimento'
+    ,',dtDataPagamento'
+    ,',dsFormaPagamento'
+    ,',vlValor'
+    ,',dsNatureza'
+    ,',dsContaContabil'
+    ,',dsUnidadeNegocio'
+    ,',dsCentroCusto'
+    ,CASE WHEN v_UsaCampoBanco = 1 THEN ',dsBanco' ELSE '' END
+    ,')'
+    ,' SELECT '
+    ,v_idCarga
+    ,',dsCpfCnpjCliente '
+    ,',dsNomeCliente '
+    ,',dsCodigoInterno '   
+    ,',STR_TO_DATE(dsDataEmissao, ''%d/%m/%Y'') dtDataEmissao'
+    ,',STR_TO_DATE(dsDataVencimento, ''%d/%m/%Y'') dtDataVencimento'
+    ,',STR_TO_DATE(dsDataPagamento, ''%d/%m/%Y'') dtDataPagamento'
+    ,',dsFormaPagamento ' 
+    ,',ExtractDecimal(dsValor) vlValor'
+    ,',dsNatureza '
+    ,',dsContaContabil '
+    ,',dsUnidadeNegocio ' 
+    ,',dsCentroCusto '
+    ,CASE WHEN v_UsaCampoBanco = 1 THEN ',dsBanco' ELSE '' END
+    ,' FROM `ctbsdb_dev`.`co_import_csv` i '
+    ,' WHERE '
+    ,' i.idUsuario = ', p_idUsuario
+    ,' AND i.idEmpresa = ', p_idEmpresa
+    ,' AND i.dtImport = ''', v_dtImport,''''
+    );
+
+END IF;
 
 /*####DEBUG*/
 -- GET DIAGNOSTICS nRowsAffected = ROW_COUNT;

@@ -1,0 +1,39 @@
+{
+  "statsConfig": [
+    {
+      "vlTotalMensal": {
+        "title": "Estoque - Custo Mensal",
+        "type": "primary",
+        "icon": "stats-bars"
+      }
+    },
+    {
+      "qtTotalRegistro" : {
+        "title": "Registros Importados",
+        "type": "success",
+        "icon": "database"
+      }
+    },
+    {
+      "dtUltImport": {
+        "title": "Última Importação",
+        "type": "empty",
+        "icon": "download3"
+      }
+    }
+  ],
+  "filtroDicionario": [
+    {
+        "dsUnidadeNegocio": "Unidade de Negócio",
+        "dsCentroCusto": "Centro de Receitas"
+    }
+  ],
+  "dtColumns": [
+    { "title": "#", "dataIndex": "idFaturamento", "sorter": true},
+    { "title": "Data Compra", "dataIndex": "dtDataCompra", "sorter": true },
+    { "title": "Valor Unitário", "dataIndex": "vlValorUnitario", "sorter": true },
+    { "title": "Unidade de Negócios", "dataIndex": "dsUnidadeNegocio", "sorter": true},
+    { "title": "Centro de Receitas", "dataIndex": "dsCentroCusto", "sorter": true }
+  ]
+}
+
