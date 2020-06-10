@@ -31,7 +31,7 @@
   "dtColumns": [
     { "title": "#", "dataIndex": "idFaturamento", "sorter": true},
     { "title": "Data Compra", "dataIndex": "dtDataCompra", "sorter": true },
-    { "title": "Valor Unitário", "dataIndex": "vlValorUnitario", "sorter": true },
+    { "title": "Valor Unitário", "dataIndex": "vlValor", "sorter": true },
     { "title": "Unidade de Negócios", "dataIndex": "dsUnidadeNegocio", "sorter": true},
     { "title": "Centro de Receitas", "dataIndex": "dsCentroCusto", "sorter": true }
   ]

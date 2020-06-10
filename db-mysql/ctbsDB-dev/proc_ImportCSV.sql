@@ -72,7 +72,7 @@ insert into
    ,dsProduto
    ,dsLinhaProduto
    ,dsQuantidade     
-   ,dsValorUnitario      
+   ,dsValor      
     )
 SELECT
     p_idUsuario      
@@ -108,7 +108,7 @@ FROM
             descDataVencimento VARCHAR(20) PATH '$."descDataVencimento"' NULL ON EMPTY,
             descDataPagamento VARCHAR(20) PATH '$."descDataPagamento"' NULL ON EMPTY,
             descFormaPagamento VARCHAR(50) PATH '$."descFormaPagamento"' NULL ON EMPTY,
-            descValor VARCHAR(20) PATH '$."descValor"' NULL ON EMPTY,
+            descValorUnitario VARCHAR(20) PATH '$."descValorUnitario"' NULL ON EMPTY,
             descNatureza VARCHAR(50) PATH '$."descNatureza"' NULL ON EMPTY,
             descContaContabil VARCHAR(50) PATH '$."descContaContabil"' NULL ON EMPTY,
             descUnidadeNegocio VARCHAR(50) PATH '$."descUnidadeNegocio"' NULL ON EMPTY,
@@ -183,7 +183,7 @@ IF (p_cdTipoImp = 'E') THEN
     ,',dsProduto'
     ,',dsLinhaProduto'
     ,',vlQuantidade'
-    ,',vlValorUnitario'
+    ,',vlValor'
     ,')'
     ,' SELECT '
     ,v_idCarga
@@ -197,7 +197,7 @@ IF (p_cdTipoImp = 'E') THEN
     ,',dsProduto '
     ,',dsLinhaProduto '
     ,',ExtractDecimal(dsQuantidade) vlQuantidade'
-    ,',ExtractDecimal(dsValorUnitario) dsValorUnitario'
+    ,',ExtractDecimal(dsValor) dsValor'
     ,' FROM `ctbsdb_dev`.`co_import_csv` i '
     ,' WHERE '
     ,' i.idUsuario = ', p_idUsuario
