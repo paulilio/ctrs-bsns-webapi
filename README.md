@@ -1,35 +1,36 @@
-# Projeto Controllership Bussiness WebAPI
+# Projeto Controllership Bussiness DataBase Doc
 
-## Inicializa SERVER-FAKE (Json-Server)
+Para criação do banco de dados em ambiente de desenvolvimento, basta acessar o mysql, com usuário root e executar as rotinas na seguinte ordem:
+1-create_database
+2-create_tables
+3-apoio_cargainicial
 
-Na pasta API, executar o comando
+## Módulo Importação
 
-```
-json-server --watch banco.json
-```
+### proc_ImportCSV
 
-## Inicializa Interface
+Importação das tabela principais do sistema.
+~~co_faturamento~~
+co_conta_receber
+co_conta_pagar
+co_inadimplente
+co_banco
+~~co_estoque~~
 
-Dentro pasta client-vue, verifique a existencia da pasta node_modules.
-Esta pasta não é guardada no repositório git.
-Se preciso realiza a instalação dos módulos.
+Obs.: Desativada.
+Em processo de desativação, pois as rotinas de importação ficaram mais complexas.
+Agora cada importação será tratada de modo direcionado. Últimas migrações:
+- setImportFaturamento
+- setImportEntradaEstoque
 
-```
-npm install
-npm audit fix
-```
+### setImportFaturamento
 
-Para inicializar o projeto, execute o comando:
+Os dados são importados de um s[o arquivo csv, contendo os campos para alimentar as tabelas na seguinte sequência:
+1-Insert na tabela temporária tp_import_csv, com todos os dados csv. 
+    Observe que os campos todos são descrição. Isso acontece por conta da limitação de imnportação baseada em Json.
+2-Insert na tabela 
 
-```
-npm run serve -- --mode modelo
-```
 
-## Inicializa webAPI
+## Módulo Situação Atual
 
-Na pasta server-aspnet, executar o comando
-
-```
-dotnet build
-dotnet run
-```
+## Geral - Funções

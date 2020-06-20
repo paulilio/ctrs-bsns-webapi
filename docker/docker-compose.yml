@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+
+  mysqldb:
+    container_name: mysql
+    image: mysql:latest
+    restart: always
+    #env_file: #Use environment variables from file.
+    #  - mysql.env
+    volumes:
+      - ./data:/var/lib/mysql
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=t5y6u7i8 
+      - MYSQL_DATABASE=ctbsDB_homol
+      - MYSQL_ROOT_HOST=172.*.*.*
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    networks:
+      network:
+        ipv4_address: 172.20.0.2
+
+networks:
+  network: #will be prefixed with 'parent_dir_name_' so for me, it will be 'mysql_network'
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

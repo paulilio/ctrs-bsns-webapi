@@ -1,5 +1,5 @@
 -- USUARIO
-INSERT INTO `ctbsdb_dev`.`co_usuario`
+INSERT INTO co_usuario
 (
 `dsLogin`,
 `dsSenha`,
@@ -17,7 +17,7 @@ current_timestamp() ,
 'S');
 
 -- EMPRESA
-INSERT INTO `ctbsdb_dev`.`co_empresa`
+INSERT INTO co_empresa
 (
 `dsCpfCnpj`,
 `dsNomeOficial`,

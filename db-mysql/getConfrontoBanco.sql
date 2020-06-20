@@ -1,6 +1,5 @@
-use ctbsdb_dev;
 delimiter $$ 
-drop procedure if exists getRelConfrontoBanco;
+drop procedure if exists getRelConfrontoBanco$$
 create procedure getRelConfrontoBanco(jsonParams JSON, OUT result longtext) 
 BEGIN 
 DECLARE select_result  longtext default null; 

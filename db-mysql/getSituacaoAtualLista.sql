@@ -1,6 +1,5 @@
-use ctbsdb_dev;
 delimiter $$ 
-drop procedure if exists getSituacaoAtualLista;
+drop procedure if exists getSituacaoAtualLista$$
 create procedure getSituacaoAtualLista(jsonParams JSON, IN p_cdTipoImp VARCHAR(1), OUT result longtext) 
 BEGIN 
 DECLARE _dtStart VARCHAR(10) default null; 

@@ -1,6 +1,5 @@
-use ctbsdb_dev;
 delimiter $$ 
-drop procedure if exists getSituacaoAtualFiltro;
+drop procedure if exists getSituacaoAtualFiltro$$
 create procedure getSituacaoAtualFiltro(jsonParams JSON, IN p_cdTipoImp VARCHAR(1), OUT result longtext) 
 BEGIN 
 DECLARE select_result  longtext default null; 
@@ -70,9 +69,9 @@ WHEN p_cdTipoImp = 'E' THEN
 			JSON_ARRAY(
 				 json_object('vlTotalMensal', json_object('amount',FormatCurrancyBR(vlTotalMensal)))
 				,json_object('qtTotalRegistro', json_object('amount',CAST(qtTotalRegistro as CHAR)))
-				,json_object('dtUltImport', json_object('amount',DATE_FORMAT(dtUltImport, '%d/%m/%Y')))getSituacaoAtualByJsonFields
+				,json_object('dtUltImport', json_object('amount',DATE_FORMAT(dtUltImport, '%d/%m/%Y')))
 			) as stats
-		FROM (SELECT sum(distinct vlValorTotal) vlTotalMensal, count(*) qtTotalRegistro, ca.dtUltImport FROM co_estoque, (SELECT MAX(dtImport) dtUltImport FROM co_carga ca WHERE ca.cdTipoImport = p_cdTipoImp) ca) as es
+		FROM (SELECT sum(distinct vlValorTotal0) vlTotalMensal, count(*) qtTotalRegistro, ca.dtUltImport FROM co_estoque, (SELECT MAX(dtImport) dtUltImport FROM co_carga ca WHERE ca.cdTipoImport = p_cdTipoImp) ca) as es
 	) AS T1 )  AS T2;
 
 END CASE;

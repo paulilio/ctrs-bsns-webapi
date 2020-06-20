@@ -22,5 +22,7 @@ namespace CtrsBsnsWebAPI.Data
         Task<Result> GetSituacaoAtualLista(string jsonParams, string cdTipoImport);
         public Result ImportCSV(string json, string dsNomeArquivo, int idUsuario, int idEmpresa, string cdTipoImport);
 
+        public Result SetImportFaturamento(string json, string dsNomeArquivo, int idUsuario, int idEmpresa);
+
     }
 }

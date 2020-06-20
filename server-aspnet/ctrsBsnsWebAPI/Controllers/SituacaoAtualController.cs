@@ -121,6 +121,38 @@ namespace CtrsBsnsWebAPI.Controllers
             }
         }
 
+        //FATURAMENTO
+        [HttpPost]
+        [Route("setImportFaturamento")]
+        public ActionResult<IEnumerable<string>> setImportFaturamento(dynamic data)
+        {
+            try
+            {
+                JsonElement jsonResult = data;
+                Result _result = _repo.SetImportFaturamento(
+                      JObject.Parse(jsonResult.GetRawText()).SelectToken("$.csv").ToString()
+                    , JObject.Parse(jsonResult.GetRawText()).SelectToken("$.dsNomeArquivo").ToString()
+                    , Convert.ToInt32(JObject.Parse(jsonResult.GetRawText()).SelectToken("$.idUsuario"))
+                    , Convert.ToInt32(JObject.Parse(jsonResult.GetRawText()).SelectToken("$.idEmpresa"))
+                    );
+
+                if (_result.id == 200)
+                    return this.Ok();
+                else
+                    throw new System.InvalidOperationException(_result.resultValue);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou: " + ex.Message);
+            }
+
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
         //Test: HttpPost: api/situacaoatual/Importcsv?data=
         [HttpPost]
         [Route("Importcsv")]
