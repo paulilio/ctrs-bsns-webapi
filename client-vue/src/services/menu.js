@@ -54,6 +54,11 @@ export const getLeftMenuData = [
     icon: "icmn icmn-stats-bars",
     children: [
       {
+        title: "Controle Estoque",
+        key: "relestoque",
+        url: "/relatorios/estoque"
+      },
+      {
         title: "Confronto de Dados",
         key: "relconfronto",
         url: "/relatorios/confronto"

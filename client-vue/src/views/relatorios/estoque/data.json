@@ -1,0 +1,188 @@
+{
+  "columnsEstoque": [
+    { "title": "Código", "dataIndex": "idProduto", "sorter": true, "fixed": "left"},
+    { "title": "Produto", "dataIndex": "dsProduto", "sorter": true, "fixed": "left" },
+    { "title": "Classificação", "dataIndex": "dsClassificacao", "sorter": true, "fixed": "left"},
+
+    {
+      "title": "Janeiro",
+      "children": [
+        {
+          "title": "Saldo Inicial",
+          "children": [
+            { "title": "Qtd", "dataIndex": "eq00", "sorter": true},
+            { "title": "Saldo", "dataIndex": "ec00", "sorter": true}
+          ]
+        },
+        {
+          "title": "Entrada",
+          "children": [
+            { "title": "Qtd", "dataIndex": "eq01", "sorter": true},
+            { "title": "Saldo", "dataIndex": "ec01", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saída",
+          "children": [
+            { "title": "Qtd", "dataIndex": "sq01", "sorter": true},
+            { "title": "Saldo", "dataIndex": "sc01", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saldo Atual",
+          "children": [
+            { "title": "Qtd", "dataIndex": "tq01", "sorter": true},
+            { "title": "Saldo", "dataIndex": "tc01", "sorter": true}
+          ]
+        }
+      ]
+    },
+
+
+    {
+      "title": "Fevereiro",
+      "children": [
+        {
+          "title": "Entrada",
+          "children": [
+            { "title": "Qtd", "dataIndex": "eq02", "sorter": true},
+            { "title": "Saldo", "dataIndex": "ec02", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saída",
+          "children": [
+            { "title": "Qtd", "dataIndex": "sq02", "sorter": true},
+            { "title": "Saldo", "dataIndex": "sc02", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saldo Atual",
+          "children": [
+            { "title": "Qtd", "dataIndex": "tq02", "sorter": true},
+            { "title": "Saldo", "dataIndex": "tc02", "sorter": true}
+          ]
+        }
+      ]
+    },
+
+
+    {
+      "title": "Março",
+      "children": [
+        {
+          "title": "Entrada",
+          "children": [
+            { "title": "Qtd", "dataIndex": "eq03", "sorter": true},
+            { "title": "Saldo", "dataIndex": "ec03", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saída",
+          "children": [
+            { "title": "Qtd", "dataIndex": "sq03", "sorter": true},
+            { "title": "Saldo", "dataIndex": "sc03", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saldo Atual",
+          "children": [
+            { "title": "Qtd", "dataIndex": "tq03", "sorter": true},
+            { "title": "Saldo", "dataIndex": "tc03", "sorter": true}
+          ]
+        }
+      ]
+    },
+
+
+    {
+      "title": "Abril",
+      "children": [
+        {
+          "title": "Entrada",
+          "children": [
+            { "title": "Qtd", "dataIndex": "eq04", "sorter": true},
+            { "title": "Saldo", "dataIndex": "ec04", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saída",
+          "children": [
+            { "title": "Qtd", "dataIndex": "sq04", "sorter": true},
+            { "title": "Saldo", "dataIndex": "sc04", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saldo Atual",
+          "children": [
+            { "title": "Qtd", "dataIndex": "tq04", "sorter": true},
+            { "title": "Saldo", "dataIndex": "tc04", "sorter": true}
+          ]
+        }
+      ]
+    },
+
+
+    {
+      "title": "Maio",
+      "children": [
+        {
+          "title": "Entrada",
+          "children": [
+            { "title": "Qtd", "dataIndex": "eq05", "sorter": true},
+            { "title": "Saldo", "dataIndex": "ec05", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saída",
+          "children": [
+            { "title": "Qtd", "dataIndex": "sq05", "sorter": true},
+            { "title": "Saldo", "dataIndex": "sc05", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saldo Atual",
+          "children": [
+            { "title": "Qtd", "dataIndex": "tq05", "sorter": true},
+            { "title": "Saldo", "dataIndex": "tc05", "sorter": true}
+          ]
+        }
+      ]
+    },
+
+    {
+      "title": "Junho",
+      "children": [
+        {
+          "title": "Entrada",
+          "children": [
+            { "title": "Qtd", "dataIndex": "eq06", "sorter": true},
+            { "title": "Saldo", "dataIndex": "ec06", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saída",
+          "children": [
+            { "title": "Qtd", "dataIndex": "sq06", "sorter": true},
+            { "title": "Saldo", "dataIndex": "sc06", "sorter": true}
+          ]
+        },
+        {
+          "title": "Saldo Atual",
+          "children": [
+            { "title": "Qtd", "dataIndex": "tq06", "sorter": true},
+            { "title": "Saldo", "dataIndex": "tc06", "sorter": true}
+          ]
+        }
+      ]
+    }
+
+
+  ],
+  "filtroDicionario": [
+    {
+        "dsUnidadeNegocio": "Unidade de Negócio",
+        "dsCentroCusto": "Centro de Receitas"
+    }
+  ]
+}

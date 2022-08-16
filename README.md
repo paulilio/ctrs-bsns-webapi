@@ -34,3 +34,37 @@ Os dados são importados de um s[o arquivo csv, contendo os campos para alimenta
 ## Módulo Situação Atual
 
 ## Geral - Funções
+
+## How to Initialize Fake Server (Json-Server)
+
+In the API folder, run the command 
+
+```
+json-server --watch banco.json
+```
+
+## How to initialize Interface VueJs
+
+nside the client-vue folder, check the existence of the node_modules folder.
+This folder is not stored in the git repository.
+If necessary, install the modules.
+
+```
+npm install
+npm audit fix
+```
+
+To initialize the project, run the command:
+
+```
+npm run serve -- --mode modelo
+```
+
+##  How to initialize webAPI
+
+In the server-aspnet folder, run the command
+
+```
+dotnet build
+dotnet run
+```

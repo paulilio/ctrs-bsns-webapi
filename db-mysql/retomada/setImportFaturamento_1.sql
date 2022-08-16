@@ -31,11 +31,11 @@ START TRANSACTION;
     CREATE TEMPORARY TABLE tp_import_csv(
         idImport             int not null auto_increment,
 
-		cdCodigoInterno     varchar(20),
         dtDataEmissao        varchar(20),
         dtDataVencimento     varchar(20),
         dsUnidadeNegocio     varchar(50),
         dsCentroReceita      varchar(50),
+		cdPedido             varchar(20),
         dsCpfCnpjCliente     varchar(20),
         dsNomeCliente        varchar(120),
         vlValor              varchar(20),
@@ -47,7 +47,7 @@ START TRANSACTION;
         dsTipoCusto          varchar(50),
         dsContaContabil      varchar(50),
 
-        idProduto    		 varchar(12),
+        cdProduto            varchar(12),
         dsProduto            varchar(120),
         dsClassificacao      varchar(120),
         vlCusto              varchar(20),
@@ -63,7 +63,7 @@ START TRANSACTION;
         ,dtDataVencimento  
         ,dsUnidadeNegocio  
         ,dsCentroReceita
-        ,cdCodigoInterno
+        ,cdPedido
         ,dsCpfCnpjCliente  
         ,dsNomeCliente
         ,vlValor 
@@ -75,7 +75,7 @@ START TRANSACTION;
 		,dsTipoCusto
         ,dsContaContabil   
 
-        ,idProduto
+        ,cdProduto
         ,dsProduto
         ,dsClassificacao
         ,vlCusto
@@ -86,7 +86,7 @@ START TRANSACTION;
         ,tt.dtDataVencimento
         ,tt.dsUnidadeNegocio  
         ,tt.dsCentroReceita
-        ,tt.cdCodigoInterno
+        ,tt.cdPedido
         ,tt.dsCpfCnpjCliente  
         ,tt.dsNomeCliente
         ,tt.vlValor  
@@ -98,7 +98,7 @@ START TRANSACTION;
         ,tt.dsTipoCusto
         ,tt.dsContaContabil   
 
-        ,tt.idProduto
+        ,tt.cdProduto
         ,tt.dsProduto
         ,tt.dsClassificacao
         ,tt.vlCusto
@@ -111,7 +111,7 @@ START TRANSACTION;
 			dtDataVencimento VARCHAR(20) PATH '$."dtDataVencimento"' NULL ON EMPTY,
             dsUnidadeNegocio VARCHAR(50) PATH '$."dsUnidadeNegocio"' NULL ON EMPTY,
             dsCentroReceita VARCHAR(50) PATH '$."dsCentroReceita"' NULL ON EMPTY,
-            cdCodigoInterno VARCHAR(20) PATH '$."cdCodigoInterno"' NULL ON EMPTY,
+            cdPedido VARCHAR(20) PATH '$."cdPedido"' NULL ON EMPTY,
             dsCpfCnpjCliente VARCHAR(20) PATH '$."dsCpfCnpjCliente"' NULL ON EMPTY,
             dsNomeCliente VARCHAR(120) PATH '$."dsNomeCliente"' NULL ON EMPTY,
             vlValor VARCHAR(20) PATH '$."vlValor"' NULL ON EMPTY,
@@ -122,7 +122,7 @@ START TRANSACTION;
             dsTipoCusto VARCHAR(50) PATH '$."dsTipoCusto"' NULL ON EMPTY,
             dsContaContabil VARCHAR(50) PATH '$."dsContaContabil"' NULL ON EMPTY,
 
-            idProduto VARCHAR(12) PATH '$."idProduto"' NULL ON EMPTY,
+            cdProduto VARCHAR(12) PATH '$."cdProduto"' NULL ON EMPTY,
             dsProduto VARCHAR(120) PATH '$."dsProduto"' NULL ON EMPTY,
             dsClassificacao VARCHAR(120) PATH '$."dsClassificacao"' NULL ON EMPTY,
             vlCusto VARCHAR(20) PATH '$."vlCusto"' NULL ON EMPTY,
@@ -133,7 +133,7 @@ START TRANSACTION;
 
 
     /*DADOS CARGA*/
-    INSERT INTO co_carga
+    INSERT INTO *
     (
         idUsuario
         ,idEmpresa
@@ -157,16 +157,10 @@ START TRANSACTION;
 
 
 
-    /*DADOS FATURAMENTO
-    Insere todas as ocorrências únicas de uma lista de pedidos faturados, com seus produtos. 
-    Para não repetir a ocorrência, usamos distinct sem os campos de produtos.
-    O código de faturamento vem da importação.
-    */
+    /*DADOS FATURAMENTO*/
     INSERT INTO co_faturamento(
-         idFaturamento
-		,idEmpresa
-		,idCarga
-        ,cdCodigoInterno
+        idCarga
+        ,cdPedido
         ,dsCpfCnpjCliente
         ,dsNomeCliente
         ,dtDataEmissao
@@ -177,16 +171,14 @@ START TRANSACTION;
         ,dsCentroReceita
         ,dsFormaPagamento
         ,cdPlanoContas
-        ,dsTipoRecebimento
+        ,dsTiporecebimento
         ,dsNatureza
         ,dsTipoCusto
         ,dsContaContabil
     )
-    SELECT DISTINCT
-		 cdCodigoInterno
-        ,p_idEmpresa
-        ,v_idCarga
-        ,cdCodigoInterno
+    SELECT 
+        v_idCarga
+        ,cdPedido
         ,dsCpfCnpjCliente 
         ,dsNomeCliente 
         ,STR_TO_DATE(dtDataEmissao, '%d/%m/%Y') dtDataEmissao
@@ -202,47 +194,36 @@ START TRANSACTION;
         ,dsTipoCusto
         ,dsContaContabil 
     FROM tp_import_csv i;
+    
+    SET v_idfaturamento = last_insert_id();
 
 
-    /*DADOS PRODUTO
-    Insere todos os produtos que não existem no sistema.
-    Os que já existem, são desconsiderados.
-    */
+    /*DADOS PRODUTO*/
     INSERT INTO co_produto (
-	 idProduto
-	,idEmpresa
+	 cdProduto
     ,dsProduto
     ,dsClassificacao
     ,cdTipoUltAtualizacao
     )
     SELECT DISTINCT
-         idProduto
-		,p_idEmpresa
+         cdProduto
         ,dsProduto
         ,dsClassificacao 
         ,'F'
     FROM tp_import_csv i
-    WHERE i.idProduto NOT IN (SELECT idproduto FROM co_produto);
+    WHERE i.cdProduto NOT IN (SELECT cdproduto FROM co_produto);
 
 
-    /*DADOS FATURAMENTO PRODUTO
-    Insere a relação faturamento - produto.
-    Veja que temos dois campos idEmpresa. Isso acontece por conta da utilização da chave primária composta.
-    A tabela Faturamento possui duas chaves primárias. O Mesmo acontece com a tabela Produto.
-    */
+    /*DADOS FATURAMENTO PRODUTO*/
     INSERT INTO co_faturamento_produto(
-         idFaturamento
-		,idEmpresaFat
-		,idProduto
-        ,idEmpresaPro
-		,vlCusto
-		,vlQuantidade
+        idFaturamento
+    ,cdProduto
+    ,vlCusto
+    ,vlQuantidade
     )
     SELECT 
-         cdCodigoInterno
-        ,p_idEmpresa
-        ,idProduto
-        ,p_idEmpresa
+        v_idfaturamento
+        ,cdProduto
         ,vlCusto 
         ,vlQuantidade
     FROM tp_import_csv i ; 

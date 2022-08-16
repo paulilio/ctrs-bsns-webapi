@@ -13,35 +13,46 @@ const getDefaultState = () => {
     firstRow: null,
     map: null,
     fieldsToMap: [
-        { label: "CPF/CNPJ do Cliente", key: "descCpfCnpjCliente", usedBy:'F,R,P,I,B', mandatory:false },
-        { label: "Cliente", key: "descNomeCliente", usedBy:'F,R,P,I,B', mandatory:false },
-        { label: "CNPJ do Fornecedor", key: "descCpfCnpjCliente", usedBy:'E', mandatory:false },
-        { label: "Fornecedor", key: "descNomeCliente", usedBy:'E', mandatory:false },
+      //Geral
+      { label: "Data de Emissão", key: "dtDataEmissao", usedBy:'F,R,P,I,B', mandatory:true },
+      { label: "Data de Vencimento", key: "dtDataVencimento", usedBy:'F,R,P,I,B', mandatory:true },
+      { label: "Unidade de Negócio", key: "dsUnidadeNegocio", usedBy:'F,R,P,I,B,E', mandatory:false },
 
-        { label: "Data de Emissão", key: "descDataEmissao", usedBy:'F,R,P,I,B', mandatory:true },
-        { label: "Data da Compra", key: "descDataEmissao", usedBy:'E', mandatory:true },
+      { label: "Centro de Receita", key: "dsCentroReceita", usedBy:'F,R,I,B', mandatory:false },
+      { label: "Centro de Custo", key: "dsCentroCusto", usedBy:'E', mandatory:false },
 
-        { label: "Data de Vencimento", key: "descDataVencimento", usedBy:'F,R,P,I,B', mandatory:true },
-        { label: "Data do Pagamento", key: "descDataPagamento", usedBy:'F,R,I,B', mandatory:false },
-        { label: "Forma de Pagamento", key: "descFormaPagamento", usedBy:'F,R,I,B', mandatory:false },
+      { label: "Código Pedido", key: "cdCodigoInterno", usedBy:'F,R,P,I,B', mandatory:false },
+      { label: "CPF/CNPJ do Cliente", key: "dsCpfCnpjCliente", usedBy:'F,R,P,I,B', mandatory:false },
+      { label: "Nome Cliente", key: "dsNomeCliente", usedBy:'F,R,P,I,B', mandatory:false },
+      { label: "Valor", key: "vlValor", usedBy:'F,R,P,I,B', mandatory:true },
 
-        { label: "Valor", key: "descValor", usedBy:'F,R,P,I,B', mandatory:true },
-        { label: "Custo Total", key: "descValor", usedBy:'E', mandatory:true },
+      { label: "Data do Pagamento", key: "dtDataPagamento", usedBy:'R,I,B', mandatory:false },
 
-        { label: "Produto", key: "descProduto", usedBy:'E', mandatory:true },
-        { label: "Linha de Produto", key: "descLinhaProduto", usedBy:'E', mandatory:true },
-        { label: "Quantidade", key: "descQuantidade", usedBy:'E', mandatory:true },
-        { label: "Custo Unitário", key: "descValorUnitario", usedBy:'E', mandatory:true },
+      //Faturamento
+      { label: "Código Plano de Contas", key: "cdPlanoContas", usedBy:'F', mandatory:false },
+      { label: "Tipo de Recebimento", key: "dsTipoRecebimento", usedBy:'F', mandatory:false },
+      { label: "Natureza", key: "dsNatureza", usedBy:'F', mandatory:false },
+      { label: "Tipo de Custo", key: "dsTipoCusto", usedBy:'F', mandatory:false },
+      { label: "Conta Contábil", key: "dsContaContabil", usedBy:'F', mandatory:false },
 
-        { label: "Natureza", key: "descNatureza", usedBy:'F,R,P,I,B', mandatory:false },
-        { label: "Conta Contábil", key: "descContaContabil", usedBy:'F,R,P,I,B', mandatory:false },
-        { label: "Unidade de Negócios", key: "descUnidadeNegocio", usedBy:'F,R,P,I,B,E', mandatory:false },
-        { label: "Centro de Custo", key: "descCentoCusto", usedBy:'F,R,I,B,E', mandatory:false },
+      //Estoque
+      { label: "Data da Compra", key: "dtDataCompra", usedBy:'E', mandatory:true },
+      { label: "CNPJ do Fornecedor", key: "dsCpfCnpjFornecedor", usedBy:'E', mandatory:false },
+      { label: "Fornecedor", key: "dsNomeFornecedor", usedBy:'E', mandatory:false },
+      { label: "Estoque Central", key: "dsEstoqueCentral", usedBy:'E', mandatory:true },
 
-        { label: "Caixas/Bancos", key: "descBanco", usedBy:'B', mandatory:true },
-        { label: "Código Interno", key: "descCodigoInterno", usedBy:'F,R,P,I,B,E', mandatory:false },
+      //Produto (faturamento e estoque)
+      { label: "Código Produto", key: "idProduto", usedBy:'F,E', mandatory:false },
+      { label: "Descrição do Produto", key: "dsProduto", usedBy:'F,E', mandatory:false },
+      { label: "Classificação do Produto", key: "dsClassificacao", usedBy:'F,E', mandatory:false },
+      { label: "Custo Unitário", key: "vlCusto", usedBy:'F,E', mandatory:false },
+      { label: "Quantidade", key: "vlQuantidade", usedBy:'F,E', mandatory:false },
+      { label: "Custo Total", key: "vlCustoTotal", usedBy:'F,E', mandatory:true },
 
-      ],
+      { label: "Natureza", key: "descNatureza", usedBy:'R,P,I,B', mandatory:false },
+      { label: "Conta Contábil", key: "descContaContabil", usedBy:'R,P,I,B', mandatory:false },
+      { label: "Caixas/Bancos", key: "descBanco", usedBy:'B', mandatory:true },
+    ],
     tiposImport: [
       {
         "F": "Faturamento",
@@ -49,7 +60,8 @@ const getDefaultState = () => {
         "P": "Contas a Pagar",
         "I": "Inadimplência",
         "B": "Caixas e Bancos",
-        "E": "Estoque"
+        "E": "Estoque",
+        "C": "Plano de Contas"
       }
     ]
   }

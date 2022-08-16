@@ -54,6 +54,16 @@ namespace CtrsBsnsWebAPI.Data
             return new Result() { id = obj.status, resultValue = ((obj.result == null && obj.status != 200) ? "Erro não especificado!" : obj.result) };
         }
 
+        public async Task<Result> GetRelEstoque(string jsonParams)
+        {
+            Result r = await _context.Set<Result>().FromSql<Result>(
+                "call getRelEstoque(@jsonParams, @result); SELECT 0 id, @result resultValue;"
+                , new MySqlParameter("@jsonParams", MySqlDbType.LongText) { Value = jsonParams, ParameterName = "@jsonParams" }
+                ).FirstOrDefaultAsync();
+
+            dynamic obj = JsonConvert.DeserializeObject(r.resultValue);
+            return new Result() { id = obj.status, resultValue = ((obj.result == null && obj.status != 200) ? "Erro não especificado!" : obj.result) };
+        }
 
     }
 }

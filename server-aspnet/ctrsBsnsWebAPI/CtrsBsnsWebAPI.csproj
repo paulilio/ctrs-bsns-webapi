@@ -11,5 +11,14 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="SpreadsheetGear">
+      <HintPath>lib\SpreadsheetGear.dll</HintPath>
+    </Reference>
+    <Reference Include="SpreadsheetGear.Design">
+      <HintPath>lib\SpreadsheetGear.Design.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 
 </Project>

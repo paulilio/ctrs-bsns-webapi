@@ -81,12 +81,12 @@ export default {
     forEach(this.fieldsToMap, (f_obj, f_index, i) => {
 
       if(f_obj.usedBy.indexOf(store.state.tipoImportSelected) > -1){
-        if (f_obj.key == "descCpfCnpjCliente") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
-        if (f_obj.key == "descNomeCliente") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
-        if (f_obj.key == "descNatureza") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
-        if (f_obj.key == "descContaContabil") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
-        if (f_obj.key == "descBanco") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
-        if (f_obj.key == "descCodigoInterno") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+        if (f_obj.key == "dsCpfCnpjCliente") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+        if (f_obj.key == "dsNomeCliente") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+        if (f_obj.key == "dsNatureza") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+        if (f_obj.key == "dsContaContabil") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+        if (f_obj.key == "dsBanco") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
+        if (f_obj.key == "dsCodigoInterno") { this.columnsBody.push({title: f_obj.label,dataIndex: f_obj.key}); return; }
 
         if (re_0A99.test(get(this.map, f_obj.key))) {
         //Mapeado na fase anterior. null ou acima de 98 é não mapeado.

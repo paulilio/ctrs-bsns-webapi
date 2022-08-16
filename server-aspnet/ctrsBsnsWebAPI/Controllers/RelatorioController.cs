@@ -15,7 +15,8 @@ namespace CtrsBsnsWebAPI.Controllers
     public class RelatorioController : ControllerBase
     {
         public IRelatorioRepository<ApplicationContext> _repo { get; }
-        public RelatorioController(IRelatorioRepository<ApplicationContext> repo) {_repo = repo;}
+        public IRelatorioSpreedSheet<ApplicationContext> _sheet { get; }
+        public RelatorioController(IRelatorioRepository<ApplicationContext> repo, IRelatorioSpreedSheet<ApplicationContext> sheet) {_repo = repo; _sheet = sheet; }
 
         //CONFRONTO DE DADOS
         [HttpGet("GetRelConfrontoFiltro")]
@@ -77,6 +78,35 @@ namespace CtrsBsnsWebAPI.Controllers
                 JsonElement jsonResult = data;
                 string jsonParams = JObject.Parse(jsonResult.GetRawText()).SelectToken("$.params").ToString();
                 Result _result = await _repo.GetRelConfrontoBanco(jsonParams);
+
+                if (_result.id == 200)
+                    return this.Ok(_result.resultValue);
+                else
+                    throw new System.InvalidOperationException(_result.resultValue);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        //CONFRONTO DE DADOS
+        [HttpGet("GetRelEstoque")]
+        [Route("GetRelEstoque")]
+        public async Task<ActionResult<IEnumerable<string>>> GetRelEstoque(dynamic data)
+        {
+            try
+            {
+
+                //Result _result = await _sheet.calc();
+
+                JsonElement jsonResult = data;
+                string jsonParams = JObject.Parse(jsonResult.GetRawText()).SelectToken("$.params").ToString();
+                Result _result = await _repo.GetRelEstoque(jsonParams);
 
                 if (_result.id == 200)
                     return this.Ok(_result.resultValue);

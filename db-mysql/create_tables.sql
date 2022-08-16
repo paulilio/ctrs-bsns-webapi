@@ -92,25 +92,66 @@ create table co_empresa
 );
 
 /*==============================================================*/
+/* Table: co_entrada_estoque                                    */
+/*==============================================================*/
+create table co_entrada_estoque
+(
+   idEntradaEstoque     int not null auto_increment  comment '',
+   idCarga              int  comment '',
+   idProduto            int  comment 'Codigo do produto do cliente',
+   idEmpresa            int  comment '',
+   dsCpfCNPJFornecedor  varchar(20)  comment '',
+   dsNomeFornecedor     varchar(120)  comment '',
+   dtDataCompra         datetime not null  comment '',
+   vlValor              decimal(20,2) not null  comment '',
+   vlQuantidade         decimal(12,0) not null  comment '',
+   dsUnidadeNegocio     varchar(50)  comment '',
+   dsCentroCusto        varchar(50)  comment '',
+   vlValorTotal         decimal(20,2) not null  comment '',
+   primary key (idEntradaEstoque)
+);
+
+/*==============================================================*/
 /* Table: co_faturamento                                        */
 /*==============================================================*/
 create table co_faturamento
 (
    idFaturamento        int not null auto_increment  comment '',
+   idEmpresa            int not null  comment '',
    idCarga              int not null  comment '',
+   cdCodigoInterno      int  comment '',
    dsCpfCnpjCliente     varchar(20)  comment '',
    dsNomeCliente        varchar(120)  comment '',
-   dsCodigoInterno      varchar(20)  comment '',
    dtDataEmissao        datetime  comment '',
    dtDataVencimento     datetime  comment '',
    dtDataPagamento      datetime  comment '',
-   dsFormaPagamento     varchar(50)  comment '',
-   vlValor              decimal(20,2)  comment '',
-   dsNatureza           varchar(50)  comment '',
-   dsContaContabil      varchar(50)  comment '',
+   vlValor              decimal(20,2)  comment 'valor do faturamento',
    dsUnidadeNegocio     varchar(50)  comment '',
-   dsCentroCusto        varchar(50)  comment '',
-   primary key (idFaturamento)
+   dsCentroReceita      varchar(50)  comment '',
+   dsFormaPagamento     varchar(50)  comment '',
+   cdPlanoContas        varchar(20)  comment '',
+   dsTipoRecebimento    varchar(50)  comment 'Parte do plano de contas',
+   dsNatureza           varchar(50)  comment 'Parte do plano de contas',
+   dsTipoCusto          varchar(50)  comment 'Parte do plano de contas',
+   dsContaContabil      varchar(50)  comment 'Parte do plano de contas',
+   primary key (idFaturamento, idEmpresa)
+);
+
+/*==============================================================*/
+/* Table: co_faturamento_produto                                */
+/*==============================================================*/
+create table co_faturamento_produto
+(
+   idFaturaProduto      int not null auto_increment  comment '',
+   idFaturamento        int not null  comment '',
+   idEmpresaFat         int not null  comment '',
+   idProduto            int  comment 'Codigo do produto do cliente',
+   idEmpresaPro         int  comment '',
+   dsProduto            varchar(120)  comment '',
+   dsClassificacao      varchar(120)  comment '',
+   vlCusto              decimal(20,2)  comment '',
+   vlQuantidade         decimal(12)  comment '',
+   primary key (idFaturaProduto)
 );
 
 /*==============================================================*/
@@ -224,6 +265,20 @@ create table co_permissao_operacao
 );
 
 /*==============================================================*/
+/* Table: co_produto                                            */
+/*==============================================================*/
+create table co_produto
+(
+   idProduto            int not null auto_increment  comment 'Codigo do produto do cliente',
+   idEmpresa            int not null  comment '',
+   idProdutoInterno     int  comment '',
+   dsProduto            varchar(120)  comment '',
+   dsClassificacao      varchar(120)  comment '',
+   cdTipoUltAtualizacao varchar(1)  comment 'C-Cadastro;F-Faturamento;E-Entrada de EStoque',
+   primary key (idProduto, idEmpresa)
+);
+
+/*==============================================================*/
 /* Table: co_usuario                                            */
 /*==============================================================*/
 create table co_usuario
@@ -262,8 +317,23 @@ alter table co_conta_pagar add constraint FK_CO_CONTAPG_REFERENCE_CO_CARGA forei
 alter table co_conta_receber add constraint FK_CO_CONTA_REFERENCE_CO_CARGA foreign key (idCarga)
       references co_carga (idCarga) on delete restrict on update restrict;
 
+alter table co_entrada_estoque add constraint FK_CO_ENTRA_REFERENCE_CO_CARGA foreign key (idCarga)
+      references co_carga (idCarga) on delete restrict on update restrict;
+
+alter table co_entrada_estoque add constraint FK_CO_ENTRA_REFERENCE_CO_PRODU foreign key (idProduto, idEmpresa)
+      references co_produto (idProduto, idEmpresa) on delete restrict on update restrict;
+
 alter table co_faturamento add constraint FK_CO_FATUR_REFERENCE_CO_CARGA foreign key (idCarga)
       references co_carga (idCarga) on delete restrict on update restrict;
+
+alter table co_faturamento add constraint FK_CO_FATUR_REFERENCE_CO_EMPRE foreign key (idEmpresa)
+      references co_empresa (idEmpresa) on delete restrict on update restrict;
+
+alter table co_faturamento_produto add constraint FK_CO_FATUR_REFERENCE_CO_FATUR foreign key (idFaturamento, idEmpresaFat)
+      references co_faturamento (idFaturamento, idEmpresa) on delete restrict on update restrict;
+
+alter table co_faturamento_produto add constraint FK_CO_FATUR_REFERENCE_CO_PRODU foreign key (idProduto, idEmpresaPro)
+      references co_produto (idProduto, idEmpresa) on delete restrict on update restrict;
 
 alter table co_grupo_acesso add constraint FK_CO_GRUPO_REFERENCE_CO_USUAR foreign key (idUsuario)
       references co_usuario (idUsuario) on delete restrict on update restrict;
@@ -294,6 +364,9 @@ alter table co_permissao_operacao add constraint FK_CO_PERMI_REFERENCE_CO_PERMI 
 
 alter table co_permissao_operacao add constraint FK_CO_PERMI_REFERENCE_CO_OPERA foreign key (idOperacao)
       references co_operacao (idOperacao) on delete restrict on update restrict;
+
+alter table co_produto add constraint FK_CO_PRODU_REFERENCE_CO_EMPRE foreign key (idEmpresa)
+      references co_empresa (idEmpresa) on delete restrict on update restrict;
 
 alter table co_usuario_empresa add constraint FK_CO_USUAR_REFERENCE_CO_EMPRE foreign key (idEmpresa)
       references co_empresa (idEmpresa) on delete restrict on update restrict;

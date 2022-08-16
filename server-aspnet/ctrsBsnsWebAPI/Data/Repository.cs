@@ -77,7 +77,7 @@ namespace CtrsBsnsWebAPI.Data
             return new Result() { id = obj.status, resultValue = ((obj.result == null && obj.status != 200) ? "Erro não especificado!" : obj.result) };
         }
 
-        public Result setImportFaturamento(string json, string dsNomeArquivo, int idUsuario, int idEmpresa)
+        public Result SetImportFaturamento(string json, string dsNomeArquivo, int idUsuario, int idEmpresa)
         {
             try
             {
@@ -108,14 +108,39 @@ namespace CtrsBsnsWebAPI.Data
         { 
             try
             {
-                Result r = _context.Set<Result>().FromSql<Result>(
-                    "call proc_ImportCSV(@p_json, @p_dsNomeArquivo, @p_IdEmpresa, @p_idUsuario, @p_cdTipoImp, @result); SELECT 0 id, @result resultValue;"
-                    , new MySqlParameter("@p_json", MySqlDbType.LongText) { Value = json, ParameterName = "@p_json" }
-                    , new MySqlParameter("@p_dsNomeArquivo", MySqlDbType.String) { Value = dsNomeArquivo, ParameterName = "@p_dsNomeArquivo" }
-                    , new MySqlParameter("@p_IdEmpresa", MySqlDbType.Int32) { Value = idEmpresa, ParameterName = "@p_IdEmpresa" }
-                    , new MySqlParameter("@p_idUsuario", MySqlDbType.Int32) { Value = idUsuario, ParameterName = "@p_idUsuario" }
-                    , new MySqlParameter("@p_cdTipoImp", MySqlDbType.String) { Value = cdTipoImport, ParameterName = "@p_cdTipoImp" }
-                    ).FirstOrDefault();
+                Result r;
+                switch (cdTipoImport)
+                {
+                    case "F":
+                        r = _context.Set<Result>().FromSql<Result>(
+                        "call setImportFaturamento(@p_json, @p_dsNomeArquivo, @p_IdEmpresa, @p_idUsuario, @result); SELECT 0 id, @result resultValue;"
+                        , new MySqlParameter("@p_json", MySqlDbType.LongText) { Value = json, ParameterName = "@p_json" }
+                        , new MySqlParameter("@p_dsNomeArquivo", MySqlDbType.String) { Value = dsNomeArquivo, ParameterName = "@p_dsNomeArquivo" }
+                        , new MySqlParameter("@p_IdEmpresa", MySqlDbType.Int32) { Value = idEmpresa, ParameterName = "@p_IdEmpresa" }
+                        , new MySqlParameter("@p_idUsuario", MySqlDbType.Int32) { Value = idUsuario, ParameterName = "@p_idUsuario" }
+                        ).FirstOrDefault();
+                        break;
+                    case "E":
+                        r = _context.Set<Result>().FromSql<Result>(
+                        "call setImportEstoque(@p_json, @p_dsNomeArquivo, @p_IdEmpresa, @p_idUsuario, @result); SELECT 0 id, @result resultValue;"
+                        , new MySqlParameter("@p_json", MySqlDbType.LongText) { Value = json, ParameterName = "@p_json" }
+                        , new MySqlParameter("@p_dsNomeArquivo", MySqlDbType.String) { Value = dsNomeArquivo, ParameterName = "@p_dsNomeArquivo" }
+                        , new MySqlParameter("@p_IdEmpresa", MySqlDbType.Int32) { Value = idEmpresa, ParameterName = "@p_IdEmpresa" }
+                        , new MySqlParameter("@p_idUsuario", MySqlDbType.Int32) { Value = idUsuario, ParameterName = "@p_idUsuario" }
+                        ).FirstOrDefault();
+                        break;
+                    default:
+                        r = _context.Set<Result>().FromSql<Result>(
+                            "call proc_ImportCSV(@p_json, @p_dsNomeArquivo, @p_IdEmpresa, @p_idUsuario, @p_cdTipoImp, @result); SELECT 0 id, @result resultValue;"
+                            , new MySqlParameter("@p_json", MySqlDbType.LongText) { Value = json, ParameterName = "@p_json" }
+                            , new MySqlParameter("@p_dsNomeArquivo", MySqlDbType.String) { Value = dsNomeArquivo, ParameterName = "@p_dsNomeArquivo" }
+                            , new MySqlParameter("@p_IdEmpresa", MySqlDbType.Int32) { Value = idEmpresa, ParameterName = "@p_IdEmpresa" }
+                            , new MySqlParameter("@p_idUsuario", MySqlDbType.Int32) { Value = idUsuario, ParameterName = "@p_idUsuario" }
+                            , new MySqlParameter("@p_cdTipoImp", MySqlDbType.String) { Value = cdTipoImport, ParameterName = "@p_cdTipoImp" }
+                            ).FirstOrDefault();
+                        break;
+                }
+
                 dynamic obj = JsonConvert.DeserializeObject(r.resultValue);
                 return new Result() { id = obj.status, resultValue = ((obj.result == null) ? "Erro não especificado!" : obj.result) };
 

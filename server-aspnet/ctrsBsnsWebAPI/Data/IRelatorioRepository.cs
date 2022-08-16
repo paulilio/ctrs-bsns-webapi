@@ -14,6 +14,7 @@ namespace CtrsBsnsWebAPI.Data
         Task<Result> GetRelConfrontoFiltro(string jsonParams);
         Task<Result> GetRelConfronto(string jsonParams);
         Task<Result> GetRelConfrontoBanco(string jsonParams);
+        Task<Result> GetRelEstoque(string jsonParams);
 
     }
 }
